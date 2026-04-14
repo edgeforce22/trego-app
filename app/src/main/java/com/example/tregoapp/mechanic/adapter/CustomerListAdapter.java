@@ -1,0 +1,159 @@
+package com.example.tregoapp.mechanic.adapter;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.tregoapp.R;
+import com.example.tregoapp.mechanic.listener.OnItemClickListener;
+import com.example.tregoapp.mechanic.model.ServiceRequest;
+import com.example.tregoapp.mechanic.utils.Utility;
+import com.google.android.material.button.MaterialButton;
+
+public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerListAdapter.MechanicViewHolder> {
+
+    private final OnItemClickListener listener;
+    private final Utility utility = new Utility();
+
+    private static final int TYPE_NORMAL = 0;
+    private static final int TYPE_SOS = 1;
+
+    public CustomerListAdapter(OnItemClickListener listener) {
+        super(DIFF_CALLBACK);
+        this.listener = listener;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        ServiceRequest item = getItem(position);
+        if (item != null && "SOS".equalsIgnoreCase(item.getType())) {
+            return TYPE_SOS;
+        }
+        return TYPE_NORMAL;
+    }
+
+    @NonNull
+    @Override
+    public MechanicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        int layoutRes = viewType == TYPE_SOS ? R.layout.sos_request_item_layout : R.layout.request_item_layout;
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(layoutRes, parent, false);
+        return new MechanicViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MechanicViewHolder holder, int position) {
+
+        ServiceRequest item = getItem(position);
+        if (item == null) return;
+
+        // Display customer name from the model
+        String name = item.getCustomerName();
+        if (name == null || name.isEmpty() || "N/A".equals(name)) {
+            holder.tvCustomerName.setText("SOS".equalsIgnoreCase(item.getType()) ? "Emergency Help Needed" : "Customer");
+        } else {
+            holder.tvCustomerName.setText(name);
+        }
+
+        if (item.getCustomerLocation() != null) {
+            holder.tvCustomerAddress.setText(item.getCustomerLocation().getAddress());
+            // Normal layout has tvMechanicAddress, SOS layout might not
+            if (holder.tvMechanicAddress != null) {
+                holder.tvMechanicAddress.setText(item.getCustomerLocation().getAddress());
+            }
+        } else {
+            holder.tvCustomerAddress.setText("N/A");
+            if (holder.tvMechanicAddress != null) {
+                holder.tvMechanicAddress.setText("N/A");
+            }
+        }
+
+        String services = item.getServiceId();
+        if ("SOS".equalsIgnoreCase(item.getType())) {
+            holder.tvService.setText(services != null ? services : "Emergency Assistance Required");
+            holder.tvDistance.setText(item.getTotalDistance() > 0 ? item.getTotalDistance() + " km away" : "Nearby");
+        } else {
+            holder.tvService.setText(services != null ? services : "N/A");
+            holder.tvDistance.setText(item.getTotalDistance() + " km");
+            if (holder.tvDuration != null) {
+                holder.tvDuration.setText(item.getTotalDuration() + " min");
+            }
+        }
+
+        holder.tvCreatedAt.setText(
+                item.getCreatedAt() != null
+                        ? utility.formatDate(item.getCreatedAt())
+                        : "N/A"
+        );
+
+        // Reset button state (important for RecyclerView reuse
+        holder.acceptBtn.setEnabled(true);
+        holder.cancelBtn.setEnabled(true);
+
+        // Accept Click
+        holder.acceptBtn.setOnClickListener(v -> {
+            holder.acceptBtn.setEnabled(false); // prevent double click
+            listener.onClick(item.getId());
+        });
+
+        // Cancel Click
+        holder.cancelBtn.setOnClickListener(v -> {
+            holder.cancelBtn.setEnabled(false);
+            listener.onClick2(item.getId());
+        });
+    }
+
+    // ================= VIEW HOLDER =================
+
+    public static class MechanicViewHolder extends RecyclerView.ViewHolder {
+
+        TextView tvCustomerAddress, tvCustomerName, tvMechanicAddress,
+                tvService, tvDistance, tvDuration, tvCreatedAt;
+
+        MaterialButton acceptBtn, cancelBtn;
+
+        public MechanicViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            tvCustomerName = itemView.findViewById(R.id.tvCustomerName);
+            tvCustomerAddress = itemView.findViewById(R.id.tvCustomerAddress);
+            tvMechanicAddress = itemView.findViewById(R.id.tvMechanicAddress); // Optional in SOS
+            tvService = itemView.findViewById(R.id.tvServices);
+            tvDistance = itemView.findViewById(R.id.tvDistance);
+            tvDuration = itemView.findViewById(R.id.tvDuration); // Optional in SOS
+            tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
+            acceptBtn = itemView.findViewById(R.id.acceptBtn);
+            cancelBtn = itemView.findViewById(R.id.cancelBtn);
+        }
+    }
+
+    // ================= DIFF UTIL =================
+
+    private static final DiffUtil.ItemCallback<ServiceRequest> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<ServiceRequest>() {
+
+                @Override
+                public boolean areItemsTheSame(@NonNull ServiceRequest oldItem,
+                                               @NonNull ServiceRequest newItem) {
+                    return oldItem.getId().equals(newItem.getId());
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull ServiceRequest oldItem,
+                                                  @NonNull ServiceRequest newItem) {
+
+                    // Comparing important fields only
+                    return oldItem.getStatus().equals(newItem.getStatus()) &&
+                            oldItem.getTotalDistance() == newItem.getTotalDistance() &&
+                            oldItem.getTotalDuration() == newItem.getTotalDuration() &&
+                            oldItem.getServiceId().equals(newItem.getServiceId()) &&
+                            oldItem.getCustomerId().equals(newItem.getCustomerId());
+                }
+            };
+}

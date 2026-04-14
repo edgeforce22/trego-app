@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".RoleSelectionFragment"
+    android:orientation="vertical"
+    android:background="@color/secondary_color"
+    android:gravity="center"
+    android:paddingTop="35dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_first_name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/tertiary_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_last_name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_role"
+        android:textColor="@color/text_grey"
+        android:textSize="10sp"
+        android:textStyle="italic"
+        android:layout_marginBottom="30dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="30dp"
+        android:gravity="center">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/customerBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="20dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/role_stroke"
+            app:cardBackgroundColor="@color/role_background" >
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="300dp"
+                    android:orientation="vertical"
+                    android:paddingVertical="13dp"
+                    android:paddingHorizontal="100dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/customer"
+                        android:layout_marginBottom="10dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer"
+                        android:textSize="15dp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/customer_description"
+                        android:textSize="7sp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/cust_checked"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/unchecked"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"/>
+
+            </FrameLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mechanicBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/role_stroke"
+            app:cardBackgroundColor="@color/role_background" >
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="300dp"
+                    android:orientation="vertical"
+                    android:paddingVertical="13dp"
+                    android:paddingHorizontal="100dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/mechanic"
+                        android:layout_marginBottom="10dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mechanic"
+                        android:textSize="15dp"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mechanic_description"
+                        android:textSize="7dp" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/mech_checked"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/unchecked"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"/>
+
+            </FrameLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/continueBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="320dp"
+        android:text="@string/continuee"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        android:layout_marginBottom="20dp"
+        android:paddingVertical="13dp"
+        app:cornerRadius="10dp"/>
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="30dp"-->
+<!--        android:layout_marginBottom="30dp">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/byContinue"-->
+<!--            android:textSize="10dp"/>-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/termsService"-->
+<!--            android:textSize="10dp"-->
+<!--            android:textColor="@color/primary_color"-->
+<!--            android:linksClickable="true"-->
+<!--            android:paddingStart="4dp" />-->
+
+<!--    </LinearLayout>-->
+
+</LinearLayout>

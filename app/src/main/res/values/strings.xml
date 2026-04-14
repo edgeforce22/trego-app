@@ -1,0 +1,108 @@
+<resources>
+    // For App name
+    <string name="app_name">TreGo</string>
+    <string name="app_first_name">Tre</string>
+    <string name="app_last_name">Go</string>
+
+    <string name="description">Roadside assistance will make your ride easier</string>
+    <string name="get_started">Get Started</string>
+    <string name="select_role">Select your account type to get started</string>
+    <string name="customer">Customer</string>
+    <string name="customer_description">I want to get roadside help</string>
+    <string name="mechanic">Mechanic</string>
+    <string name="mechanic_description">I want to provide roadside service</string>
+    <string name="continuee">Continue</string>
+    <string name="byContinue">By continuing, you agree to our</string>
+    <string name="termsService"><u>terms of service and privacy policy.</u></string>
+
+    // For Sign In
+    <string name="signIn">SignIn</string>
+    <string name="signIn_first_word">Sign</string>
+    <string name="signIn_last_word">In</string>
+    <string name="signIn_desp">Don’t have an account?</string>
+
+    // For Placeholders
+    <string name="name">Name</string>
+    <string name="full_name">Full Name</string>
+    <string name="email">Email Id</string>
+    <string name="phoneNumber">Phone Number</string>
+    <string name="role">Role</string>
+    <string name="address">Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="service_required">Service Required</string>
+    <string name="search">Search Anything...</string>
+    <string name="service_type">Service Type</string>
+    <string name="problem_description">Problem Description</string>
+
+    // For Sign Up
+    <string name="signUp_first_word">Sign</string>
+    <string name="signUp_last_word">Up</string>
+    <string name="signUp">SignUp</string>
+    <string name="signUp_desp">Already have an account?</string>
+
+    // For Vehicle Register
+    <string name="vehicle">Vehicle</string>
+    <string name="register">Register</string>
+    <string name="register_vehicle">Register Vehicle</string>
+    <string name="vehicle_type">Vehicle Type</string>
+    <string name="vehicel_brand">Vehicle Brand</string>
+    <string name="vehicel_model">Vehicle Model</string>
+    <string name="registration_number">Registration Number</string>
+
+    // For Shop Registration
+    <string name="shop">Shop</string>
+    <string name="register_shop">Register Shop</string>
+    <string name="shop_name">Shop Name</string>
+    <string name="shop_contact_number">Shop Contact Number</string>
+    <string name="opening_time">Opening Time</string>
+    <string name="closing_time">Closing Time</string>
+
+    // For Service Creation
+    <string name="service">Service</string>
+    <string name="create">Create</string>
+    <string name="price">Price</string>
+    <string name="create_service">Create Service</string>
+
+    // For Filter
+    <string name="bike">Bike</string>
+    <string name="scooter">Scooter</string>
+    <string name="bicycle">Bicycle</string>
+    <string name="car">Car</string>
+    <string name="bus">Bus</string>
+    <string name="truck">Truck</string>
+    <string name="tow">Tow</string>
+
+    // For Google
+    <string name="continue_with_google">Continue with google</string>
+
+    // For Forget Password
+    <string name="forget_password">Forget Password?</string>
+
+    // Welcome Description
+    <string name="cust_sign_welcome">Welcome to Customer,</string>
+    <string name="mech_sign_welcome">Welcome to Mechanic,</string>
+
+    // Sample Data
+    <string name="sampleAddress">Duo Nest Co-Living PG\nBengaluru.</string>
+    <string name="sampleService">Car, Bike, Bus Service</string>
+    <string name="sampleKilometer">2.5km</string>
+    <string name="sampleMinutes">15 min</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    // For Buttons
+    <string name="update_location">Update Location</string>
+    <string name="select">Select</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+    <string name="request">Request</string>
+
+    <string name="apply_request">Apply Request</string>
+    <string name="service_details">Service Details</string>
+    <string name="estimated_distance">Estimated Distance</string>
+    <string name="total_price">Total Price</string>
+    <string name="dash_dash">--</string>
+    <string name="sample_mechanic_name">Mechanic Name</string>
+    <string name="sample_mechanic_uid">UID: #12345</string>
+</resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- SOS PULSE CONTAINER -->
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:clipToOutline="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:background="@drawable/circle">
+
+            <!-- Outer Pulse -->
+            <View
+                android:id="@+id/pulseOuter"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center"
+                android:background="@drawable/pulse_circle"
+                android:alpha="0.3"/>
+
+            <!-- Inner Pulse -->
+            <View
+                android:id="@+id/pulseInner"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:background="@drawable/pulse_circle"
+                android:alpha="0.5"/>
+
+            <!-- Center SOS Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/sosButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="50dp"
+                android:backgroundTint="@color/primary_color"
+                app:cardElevation="6dp"
+                app:strokeWidth="0dp" >
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="SOS"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </FrameLayout>
+
+        <!-- STATUS TEXT -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Requesting nearby mechanic..."
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp"
+            android:textColor="@color/black"/>
+
+        <!-- SUB TEXT -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Please wait while we connect you"
+            android:textSize="13sp"
+            android:textColor="@color/text_grey"
+            android:layout_marginTop="8dp"/>
+
+        <!-- CANCEL BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelSOS"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Cancel SOS"
+            android:textColor="#D32F2F"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:rippleColor="#1AE02424" />
+
+    </LinearLayout>
+
+</FrameLayout>

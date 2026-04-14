@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary_color">#FFE429</color>
+    <color name="secondary_color">#FFFFFFFF</color>
+    <color name="tertiary_color">#FF000000</color>
+    <color name="text_grey">#8A8A8A</color>
+    <color name="role_stroke">#CCCCCC</color>
+    <color name="role_background">#FAFAFA</color>
+    <color name="placeholder_text_color">#949494</color>
+    <color name="field_stroke_color">#CCCCCC</color>
+    <color name="field_color">#FFFFFFFF</color>
+    <color name="in_app_field_color">#F0F0F0</color>
+    <color name="filter_card_background">#F0F0F0</color>
+    <color name="shop_card_background">#FFFFFF</color>
+    <color name="rating_card_background">#F6F6F6</color>
+    <color name="card_text">#878787</color>
+    <color name="cancel_btn_background">#F4F4F4</color>
+    <color name="spacer">#ECECEC</color>
+    <color name="home_background">#DEDEDE</color>
+    <color name="light_grey">#D3D3D3</color>
+    <color name="profile_card_dark_text">#606060</color>
+    <color name="profile_card_light_text">#8F8F8F</color>
+    <color name="profile_card_border">#DDDDDD</color>
+    <color name="profile_logout">#E05252</color>
+
+    // Ripple color
+    <color name="ripple_color">#33000000</color>
+</resources>

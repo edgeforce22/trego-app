@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".WelcomeFragment"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/secondary_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_first_name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/tertiary_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_last_name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/description"
+        android:textColor="@color/text_grey"
+        android:textSize="10sp"
+        android:textStyle="italic"
+        android:layout_marginBottom="30dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/startBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/get_started"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/primary_color"
+        app:cornerRadius="10dp" />
+
+<!--    <LinearLayout-->
+<!--        xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:padding="16dp">-->
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Rate this shop"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="bold"/>-->
+
+<!--        <RatingBar-->
+<!--            android:id="@+id/ratingBar"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:progressTint="@color/primary_color"-->
+<!--            android:progressBackgroundTint="@color/light_grey"-->
+<!--            android:numStars="5"-->
+<!--            android:stepSize="0.5"-->
+<!--            android:rating="0"-->
+<!--            android:scaleX="0.8"-->
+<!--            android:scaleY="0.8"/>-->
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/btnSubmit"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Submit Rating"-->
+<!--            android:layout_marginTop="16dp"/>-->
+
+<!--    </LinearLayout>-->
+
+</LinearLayout>
