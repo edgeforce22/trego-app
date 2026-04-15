@@ -60,10 +60,6 @@ public interface ApiService {
             @Body GetRequestById request
     );
 
-    @POST("customer/getCurrentUser")
-    Call<ApiResponse<User>> getCurrentUser(
-            @Body GetRequestById request
-    );
 
     @POST("customer/auth/createRequest")
     Call<ApiResponse<ServiceRequest>> createRequest(

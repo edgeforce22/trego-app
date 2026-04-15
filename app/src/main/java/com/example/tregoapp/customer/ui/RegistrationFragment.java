@@ -103,9 +103,9 @@ public class RegistrationFragment extends Fragment {
                 }
                 else {
                     LoaderManager.hide(this);
-                    Toast.makeText(requireContext(),
-                            "Location fetched failed",
-                            Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(requireContext(),
+                    //         "Location fetched failed",
+                    //         Toast.LENGTH_SHORT).show();
                 }
             });
 

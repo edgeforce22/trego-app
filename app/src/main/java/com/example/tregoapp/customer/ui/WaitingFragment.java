@@ -118,11 +118,11 @@ public class WaitingFragment extends Fragment {
                     NavigationHelper.navigateTo(getParentFragmentManager(), AcceptanceFragment.newInstance(request_id), false);
                 } else if ("cancelled".equalsIgnoreCase(service.getStatus())) {
                     stopPolling();
-                    Toast.makeText(requireContext(), "Request cancelled by Mechanic", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(requireContext(), "Request cancelled by Mechanic", Toast.LENGTH_SHORT).show();
                     NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
                 }
             } else if (resource.getStatus() == Resource.Status.ERROR) {
-                Toast.makeText(requireContext(), resource.getMessage(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), resource.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -177,7 +177,7 @@ public class WaitingFragment extends Fragment {
     }
 
     private void cancelRequest() {
-        Toast.makeText(requireContext(), "Request cancelled", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(requireContext(), "Request cancelled", Toast.LENGTH_SHORT).show();
         viewModel.cancelRequestedService(request_id);
         NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
     }

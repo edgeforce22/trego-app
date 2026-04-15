@@ -170,23 +170,23 @@ public class CreateRequestFragment extends Fragment {
             service_id.isEmpty() &&
             problemDescription.isEmpty() &&
             address.isEmpty()) {
-            Toast.makeText(requireContext(), "Please fill up all the fields", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please fill up all the fields", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (vehicle_id.isEmpty()) {
-            Toast.makeText(requireContext(), "Please choose the vehicle", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please choose the vehicle", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (service_id.isEmpty()) {
-            Toast.makeText(requireContext(), "Please choose the service", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please choose the service", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (problemDescription.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the problem", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the problem", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (address.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the address", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the address", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;

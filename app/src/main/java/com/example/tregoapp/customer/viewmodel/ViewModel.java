@@ -150,9 +150,6 @@ public class ViewModel extends AndroidViewModel {
         repository.confirmServiceCompletion(new GetRequestById(requestId), genericActionResource);
     }
 
-    public void getCurrentUser(String uid) {
-        repository.getCurrentUser(uid, authResource);
-    }
 
     public void fetchCustomerDetails(String id) { repository.getCustomerDetails(id, customerDetails); }
     public void fetchMechanicDetails(String id) { repository.getMechanicDetails(id, mechanicDetails); }

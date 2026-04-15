@@ -113,7 +113,7 @@ public interface ApiService {
             @Body FCMTokenRequest request
     );
 
-    @POST("mechanic/getCurrentUser")
+    @POST("mechanic/auth/getCurrentUser")
     Call<ApiResponse<User>> getCurrentUser(
             @Body GetRequestById request
     );

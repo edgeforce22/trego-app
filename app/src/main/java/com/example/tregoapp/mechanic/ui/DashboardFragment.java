@@ -96,8 +96,7 @@ public class DashboardFragment extends Fragment {
             longitude = lon;
 
             if (lat == 0 || lon == 0) {
-                Toast.makeText(requireContext(),
-                        "Location fetch failed", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), \"Location fetch failed\", Toast.LENGTH_SHORT).show();
             }
         });
 

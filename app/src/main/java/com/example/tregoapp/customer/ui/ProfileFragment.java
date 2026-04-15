@@ -50,22 +50,21 @@ public class ProfileFragment extends Fragment {
         backBtn = view.findViewById(R.id.backBtn);
         logoutBtn = view.findViewById(R.id.logoutBtn);
         tvName = view.findViewById(R.id.tvName);
-//        tvId = view.findViewById(R.id.tvId);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
         tvAddress = view.findViewById(R.id.tvAddress);
         goToRegisterVehicle = view.findViewById(R.id.goToRegisterVehicle);
 
+        // Debug: Clear hardcoded text to verify code execution
+        tvName.setText("...");
+        tvPhoneNumber.setText("...");
+        tvAddress.setText("...");
+
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
         
-        // Use user ID from SharedPreferences if available, otherwise it'll be loaded via loadSavedUser
-        String savedUserId = viewModel.getUserId();
-        if (savedUserId != null && !savedUserId.isEmpty()) {
-            viewModel.getCurrentUser(savedUserId);
-        } else {
-            viewModel.loadSavedUser();
-        }
-        
         viewModelObserver();
+
+        // Load user data from local storage (Session Preferences)
+        viewModel.loadSavedUser();
 
         backBtn.setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
@@ -95,18 +94,40 @@ public class ProfileFragment extends Fragment {
     }
 
     private void viewModelObserver() {
-        viewModel.getAuthResource().observe(getViewLifecycleOwner(), resource -> {
-            LoaderManager.handleResource(this, resource, new LoaderManager.ResourceCallback<User>() {
-                @Override
-                public void onSuccess(User user) {
-                    if (user != null) {
-                        customerId = user.getId();
-                        tvName.setText(user.getName());
-                        tvPhoneNumber.setText("+91 " + user.getPhoneNumber());
-                        tvAddress.setText(user.getAddress());
-                    }
+        viewModel.getAuthResource().observe(getViewLifecycleOwner(), this::handleUserResource);
+        viewModel.getCustomerDetailsLiveData().observe(getViewLifecycleOwner(), this::handleUserResource);
+    }
+
+    private void handleUserResource(Resource<User> resource) {
+        if (resource == null) return;
+
+        if (resource.status == Resource.Status.LOADING) {
+            LoaderManager.show(this);
+        } else if (resource.status == Resource.Status.SUCCESS) {
+            LoaderManager.hide(this);
+            if (resource.data != null) {
+                User user = resource.data;
+                customerId = user.getId();
+                
+                tvName.setText(user.getName() != null && !user.getName().isEmpty() ? user.getName() : "No Name");
+                
+                String phone = user.getPhoneNumber();
+                if (phone != null && !phone.isEmpty()) {
+                    tvPhoneNumber.setText(phone.startsWith("91+") ? phone : "91+ " + phone);
+                } else {
+                    tvPhoneNumber.setText("Mobile Not Provided");
                 }
-            });
-        });
+
+                String address = user.getAddress();
+                if (address != null && !address.isEmpty()) {
+                    tvAddress.setText(address);
+                } else {
+                    tvAddress.setText("Address Not Provided");
+                }
+            }
+        } else if (resource.status == Resource.Status.ERROR) {
+            LoaderManager.hide(this);
+            Toast.makeText(requireContext(), "Error: " + resource.message, Toast.LENGTH_SHORT).show();
+        }
     }
 }

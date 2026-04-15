@@ -115,16 +115,10 @@ public class RegistrationFragment extends Fragment {
                             latitude,
                             longitude
                     );
-
-//                    Toast.makeText(requireContext(),
-//                            "Location fetched successfully",
-//                            Toast.LENGTH_SHORT).show();
-//
-//                    signUpBtn.setText("Sign Up");
                 } else {
-                    Toast.makeText(requireContext(),
-                            "Location fetched failed",
-                            Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(requireContext(),
+                    //         "Location fetched failed",
+                    //         Toast.LENGTH_SHORT).show();
                 }
             });
 //            }

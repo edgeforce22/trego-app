@@ -20,6 +20,7 @@ import com.example.tregoapp.mechanic.model.ServiceDetail;
 import com.example.tregoapp.mechanic.model.ShopDetail;
 import com.example.tregoapp.mechanic.model.StatusUpdate;
 import com.example.tregoapp.mechanic.model.auth.AuthState;
+import com.example.tregoapp.customer.network.Resource;
 import com.example.tregoapp.mechanic.model.auth.Login;
 import com.example.tregoapp.mechanic.model.auth.Register;
 import com.example.tregoapp.mechanic.model.response.ApiResponse;
@@ -101,6 +102,9 @@ public class Repository {
                         if (body.getData() != null) {
                             currentUser.postValue(body.getData());
                             mSessionManager.saveUser(body.getData());
+                            if (body.getData().getShopId() != null && !body.getData().getShopId().isEmpty()) {
+                                fetchAndSaveShopDetails(body.getData().getShopId());
+                            }
                         }
 
                     } else {
@@ -150,6 +154,9 @@ public class Repository {
                         if (body.getData() != null) {
                             currentUser.postValue(body.getData());
                             mSessionManager.saveUser(body.getData());
+                            if (body.getData().getShopId() != null && !body.getData().getShopId().isEmpty()) {
+                                fetchAndSaveShopDetails(body.getData().getShopId());
+                            }
                         }
 
                     } else {
@@ -195,6 +202,7 @@ public class Repository {
                             currentUser.postValue(body.getData().getMechanic());
                             mSessionManager.saveUser(body.getData().getMechanic());
                             shopDetail.postValue(body.getData().getShop());
+                            mSessionManager.saveShopDetails(body.getData().getShop());
                         }
                         authState.postValue(
                                 new AuthState(true, body.getMessage())
@@ -242,6 +250,7 @@ public class Repository {
                             Log.d("API_MECHANIC_DATA", new Gson().toJson(response.body()));
                             currentUser.postValue(body.getData().getMechanic());
                             mSessionManager.saveUser(body.getData().getMechanic());
+                            mSessionManager.saveShopDetails(body.getData().getShop());
                         }
                         authState.postValue(
                                 new AuthState(true, body.getMessage())
@@ -908,29 +917,49 @@ public class Repository {
         });
     }
 
-    public void getShopDetails(String id, MutableLiveData<ShopDetail> liveData) {
+    public void getShopDetails(String id, MutableLiveData<Resource<ShopDetail>> liveData) {
+        liveData.postValue(Resource.loading(null));
         api.getShopDetails(new GetRequestById(id)).enqueue(new Callback<ApiResponse<ShopDetail>>() {
             @Override
             public void onResponse(Call<ApiResponse<ShopDetail>> call, Response<ApiResponse<ShopDetail>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    liveData.postValue(response.body().getData());
+                    ApiResponse<ShopDetail> body = response.body();
+                    if (body.getSuccess()) {
+                        liveData.postValue(Resource.success(body.getData()));
+                    } else {
+                        liveData.postValue(Resource.error(body.getMessage(), null));
+                    }
+                } else {
+                    liveData.postValue(Resource.error(parseError(response), null));
                 }
             }
             @Override
-            public void onFailure(Call<ApiResponse<ShopDetail>> call, Throwable t) {}
+            public void onFailure(Call<ApiResponse<ShopDetail>> call, Throwable t) {
+                liveData.postValue(Resource.error(t.getMessage(), null));
+            }
         });
     }
 
-    public void getServiceDetails(String id, MutableLiveData<ServiceDetail> liveData) {
+    public void getServiceDetails(String id, MutableLiveData<Resource<ServiceDetail>> liveData) {
+        liveData.postValue(Resource.loading(null));
         api.getServiceDetails(new GetRequestById(id)).enqueue(new Callback<ApiResponse<ServiceDetail>>() {
             @Override
             public void onResponse(Call<ApiResponse<ServiceDetail>> call, Response<ApiResponse<ServiceDetail>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    liveData.postValue(response.body().getData());
+                    ApiResponse<ServiceDetail> body = response.body();
+                    if (body.getSuccess()) {
+                        liveData.postValue(Resource.success(body.getData()));
+                    } else {
+                        liveData.postValue(Resource.error(body.getMessage(), null));
+                    }
+                } else {
+                    liveData.postValue(Resource.error(parseError(response), null));
                 }
             }
             @Override
-            public void onFailure(Call<ApiResponse<ServiceDetail>> call, Throwable t) {}
+            public void onFailure(Call<ApiResponse<ServiceDetail>> call, Throwable t) {
+                liveData.postValue(Resource.error(t.getMessage(), null));
+            }
         });
     }
 
@@ -956,5 +985,24 @@ public class Repository {
 
     public void clearSession() {
         mSessionManager.clearPref();
+    }
+
+    public ShopDetail getSavedShopDetails() {
+        return mSessionManager.getShopDetails();
+    }
+
+    public void fetchAndSaveShopDetails(String shopId) {
+        api.getShopDetails(new GetRequestById(shopId)).enqueue(new Callback<ApiResponse<ShopDetail>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<ShopDetail>> call, Response<ApiResponse<ShopDetail>> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getSuccess()) {
+                    mSessionManager.saveShopDetails(response.body().getData());
+                }
+            }
+            @Override
+            public void onFailure(Call<ApiResponse<ShopDetail>> call, Throwable t) {
+                Log.e("Repository", "Failed to fetch shop details on login: " + t.getMessage());
+            }
+        });
     }
 }

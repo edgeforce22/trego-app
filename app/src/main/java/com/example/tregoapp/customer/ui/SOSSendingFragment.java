@@ -90,7 +90,7 @@ public class SOSSendingFragment extends Fragment {
 
         view.findViewById(R.id.btnCancelSOS).setOnClickListener(v -> {
             handler.removeCallbacksAndMessages(null);
-            Toast.makeText(requireContext(), "SOS Cancelled", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), \"SOS Cancelled\", Toast.LENGTH_SHORT).show();
             if (getActivity() != null) {
                 NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
             }
@@ -152,7 +152,7 @@ public class SOSSendingFragment extends Fragment {
                     String requestId = data.optString("requestId");
 
                     requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(requireContext(), "Mechanic Found!", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(requireContext(), "Mechanic Found!", Toast.LENGTH_SHORT).show();
 
                         NavigationHelper.navigateTo(
                                 getParentFragmentManager(),

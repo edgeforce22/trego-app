@@ -55,6 +55,13 @@ public class WorkerProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvShopName = view.findViewById(R.id.tvShopName);
 
+        // Reset text to avoid showing hardcoded XML values during loading
+        tvName.setText("...");
+        tvPhoneNumber.setText("...");
+        tvShopStatus.setText("...");
+        tvAddress.setText("...");
+        tvShopName.setText("...");
+
         LoadFragment.replaceChildFragment(this, R.id.dashboardBottomContainer, new WorkerBottomNavigationFragment());
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
@@ -93,13 +100,42 @@ public class WorkerProfileFragment extends Fragment {
                 return;
             }
 
-            LoaderManager.hide(this);
-            shopId = currentUser.getShopId();
             tvName.setText(currentUser.getName());
-            tvPhoneNumber.setText("91+ " + currentUser.getPhoneNumber());
-//            tvStatus.setText(currentUser.getStatus());
+            String phone = currentUser.getPhoneNumber();
+            if (phone != null && !phone.isEmpty()) {
+                String cleanPhone = phone.replace("91+", "").trim();
+                tvPhoneNumber.setText("91+ " + cleanPhone);
+            }
+            tvShopStatus.setText(currentUser.getStatus());
             tvAddress.setText(currentUser.getAddress());
-            tvShopName.setText("" + currentUser.getShopId());
+
+            if (currentUser.getShopId() != null && !currentUser.getShopId().isEmpty()) {
+                viewModel.fetchShopDetails(currentUser.getShopId());
+            } else {
+                tvShopName.setText("Not Assigned");
+                LoaderManager.hide(this);
+            }
+        });
+
+        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), resource -> {
+            if (resource == null) return;
+
+            switch (resource.status) {
+                case LOADING:
+                    LoaderManager.show(this);
+                    break;
+                case SUCCESS:
+                    LoaderManager.hide(this);
+                    if (resource.data != null) {
+                        tvShopName.setText(resource.data.getShopName());
+                    }
+                    break;
+                case ERROR:
+                    LoaderManager.hide(this);
+                    tvShopName.setText("Error loading shop");
+                    Toast.makeText(getContext(), resource.message, Toast.LENGTH_SHORT).show();
+                    break;
+            }
         });
     }
 }

@@ -116,20 +116,20 @@ public class VehicleRegistrationFragment extends Fragment {
 
     private boolean validateVehicleData(String vehicleType, String vehicleBrand, String vehicleModel, String registrationNumber) {
         if (vehicleType.isEmpty()) {
-            Toast.makeText(requireContext(), "Please select the vehicle type", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please select the vehicle type", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (vehicleBrand.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the vehicle brand", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the vehicle brand", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (vehicleModel.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the vehicle model", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the vehicle model", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (registrationNumberReq) {
             if (registrationNumber.isEmpty()) {
-                Toast.makeText(requireContext(), "Please enter the registration number", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), "Please enter the registration number", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }
@@ -139,7 +139,7 @@ public class VehicleRegistrationFragment extends Fragment {
     private void viewModelObserver() {
         viewModel.getVehicleRegistrationResource().observe(getViewLifecycleOwner(), resource -> {
             LoaderManager.handleResource(this, resource, vehicle -> {
-                Toast.makeText(requireContext(), "Vehicle Registered successfully", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), "Vehicle Registered successfully", Toast.LENGTH_SHORT).show();
                 NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
             });
         });

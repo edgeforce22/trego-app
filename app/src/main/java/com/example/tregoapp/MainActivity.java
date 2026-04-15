@@ -233,11 +233,11 @@ public class MainActivity extends AppCompatActivity {
     private void checkInitialStatus() {
 
         if (!NetworkLocationHelper.isInternetAvailable(this)) {
-            Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
 
         if (!NetworkLocationHelper.isLocationEnabled(this)) {
-            Toast.makeText(this, "Location is OFF", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(this, "Location is OFF", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -252,17 +252,17 @@ public class MainActivity extends AppCompatActivity {
         networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(Network network) {
-                runOnUiThread(() ->
-                        Toast.makeText(MainActivity.this, "Internet Connected", Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> {
+                        // Toast.makeText(MainActivity.this, "Internet Connected", Toast.LENGTH_SHORT).show()
+                });
                 Log.d("NETWORK", "Connected");
             }
 
             @Override
             public void onLost(Network network) {
-                runOnUiThread(() ->
-                        Toast.makeText(MainActivity.this, "Internet Lost", Toast.LENGTH_SHORT).show()
-                );
+                runOnUiThread(() -> {
+                        // Toast.makeText(MainActivity.this, "Internet Lost", Toast.LENGTH_SHORT).show()
+                });
                 Log.d("NETWORK", "Disconnected");
             }
         };
@@ -280,10 +280,10 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
 
                 if (NetworkLocationHelper.isLocationEnabled(context)) {
-                    Toast.makeText(context, "Location ON", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, "Location ON", Toast.LENGTH_SHORT).show();
                     Log.d("LOCATION", "ON");
                 } else {
-                    Toast.makeText(context, "Location OFF", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(context, "Location OFF", Toast.LENGTH_SHORT).show();
                     Log.d("LOCATION", "OFF");
                 }
             }

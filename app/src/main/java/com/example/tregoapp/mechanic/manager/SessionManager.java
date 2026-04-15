@@ -16,8 +16,10 @@ public class SessionManager {
     private static final String KEY_USER_PHONE_NUMBER = "user_phone_number";
     private static final String KEY_USER_ADDRESS = "user_address";
     private static final String KEY_USER_STATUS = "user_status";
+    private static final String KEY_SHOP_DETAILS = "shop_details";
 
     private SharedPreferences sharedPreferences;
+    private final com.google.gson.Gson gson = new com.google.gson.Gson();
 
     public SessionManager(Context context) {
         sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
@@ -34,6 +36,18 @@ public class SessionManager {
             .putString(KEY_USER_ADDRESS, user.getAddress())
             .putString(KEY_USER_STATUS, user.getStatus())
             .apply();
+    }
+
+    public void saveShopDetails(com.example.tregoapp.mechanic.model.ShopDetail shopDetail) {
+        sharedPreferences.edit()
+                .putString(KEY_SHOP_DETAILS, gson.toJson(shopDetail))
+                .apply();
+    }
+
+    public com.example.tregoapp.mechanic.model.ShopDetail getShopDetails() {
+        String shopJson = sharedPreferences.getString(KEY_SHOP_DETAILS, null);
+        if (shopJson == null) return null;
+        return gson.fromJson(shopJson, com.example.tregoapp.mechanic.model.ShopDetail.class);
     }
 
     public User getUser() {

@@ -34,6 +34,7 @@ public class ProfileFragment extends Fragment {
     private TextView tvShopStatus;
     private TextView tvAddress;
     private TextView tvShopName;
+    private TextView tvShopId;
     private LinearLayout goToCreateService;
 
     private ViewModel viewModel;
@@ -55,8 +56,17 @@ public class ProfileFragment extends Fragment {
         tvShopStatus = view.findViewById(R.id.tvShopStatus);
         tvAddress = view.findViewById(R.id.tvAddress);
         tvShopName = view.findViewById(R.id.tvShopName);
+        tvShopId = view.findViewById(R.id.tvShopId);
         goToCreateService = view.findViewById(R.id.goToCreateService);
         copyShopIdBtn = view.findViewById(R.id.copyShopIdBtn);
+
+        // Reset text to avoid showing hardcoded XML values during loading
+        tvName.setText("...");
+        tvPhoneNumber.setText("...");
+        tvShopStatus.setText("...");
+        tvAddress.setText("...");
+        tvShopName.setText("...");
+        tvShopId.setText("...");
 
         LoadFragment.replaceChildFragment(this, R.id.dashboardBottomContainer, new OwnerBottomNavigationFragment());
 
@@ -109,12 +119,12 @@ public class ProfileFragment extends Fragment {
         });
 
         copyShopIdBtn.setOnClickListener(v -> {
-            String idToCopy = tvShopName.getText().toString();
-            if (!idToCopy.isEmpty()) {
+            String idToCopy = tvShopId.getText().toString();
+            if (!idToCopy.isEmpty() && !idToCopy.equals("...") && !idToCopy.equals("Not Registered")) {
                 ClipboardManager clipboard = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText("Shop ID", idToCopy);
                 clipboard.setPrimaryClip(clip);
-                Toast.makeText(requireContext(), "Shop ID copied to clipboard", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), "Shop ID copied to clipboard", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -125,13 +135,52 @@ public class ProfileFragment extends Fragment {
                 return;
             }
 
-            LoaderManager.hide(this);
-            shopId = currentUser.getShopId();
             tvName.setText(currentUser.getName());
-            tvPhoneNumber.setText("91+ " + currentUser.getPhoneNumber());
-//            tvStatus.setText(currentUser.getStatus());
+            String phone = currentUser.getPhoneNumber();
+            if (phone != null && !phone.isEmpty()) {
+                String cleanPhone = phone.replace("91+", "").trim();
+                tvPhoneNumber.setText("91+ " + cleanPhone);
+            }
+            tvShopStatus.setText(currentUser.getStatus());
             tvAddress.setText(currentUser.getAddress());
-            tvShopName.setText("" + currentUser.getShopId());
+
+            shopId = currentUser.getShopId();
+            if (shopId != null && !shopId.isEmpty()) {
+                tvShopId.setText(shopId);
+
+                // Try to load from local storage first
+                com.example.tregoapp.mechanic.model.ShopDetail savedShop = viewModel.getSavedShopDetails();
+                if (savedShop != null && shopId.equals(savedShop.getShopId())) {
+                    tvShopName.setText(savedShop.getShopName());
+                    LoaderManager.hide(this);
+                } else {
+                    viewModel.fetchShopDetails(shopId);
+                }
+            } else {
+                tvShopName.setText("Not Registered");
+                tvShopId.setText("Not Registered");
+                LoaderManager.hide(this);
+            }
+        });
+
+        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopResource -> {
+            if (shopResource == null) return;
+            switch (shopResource.status) {
+                case LOADING:
+                    LoaderManager.show(this);
+                    break;
+                case SUCCESS:
+                    LoaderManager.hide(this);
+                    if (shopResource.data != null) {
+                        tvShopName.setText(shopResource.data.getShopName());
+                    }
+                    break;
+                case ERROR:
+                    LoaderManager.hide(this);
+                    tvShopName.setText("Error loading shop");
+                    // Toast.makeText(requireContext(), "Error fetching shop details: " + shopResource.message, Toast.LENGTH_SHORT).show();
+                    break;
+            }
         });
     }
 }

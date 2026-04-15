@@ -207,7 +207,7 @@ public class MechanicSideTrackingFragment extends Fragment {
             if (authState == null) return;
             LoaderManager.hide(this);
             if (!authState.getSuccess()) {
-                Toast.makeText(requireContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
 

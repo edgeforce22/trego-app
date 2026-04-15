@@ -122,7 +122,6 @@
                         android:layout_height="wrap_content"
                         android:text="91+ 9876"
                         android:textSize="13dp"
-                        android:maxWidth="190dp"
                         android:textColor="@color/profile_card_light_text"/>
 
                 </LinearLayout>

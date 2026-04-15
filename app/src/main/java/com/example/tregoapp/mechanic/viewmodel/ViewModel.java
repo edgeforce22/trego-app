@@ -20,6 +20,7 @@ import com.example.tregoapp.mechanic.model.auth.Login;
 import com.example.tregoapp.mechanic.model.auth.Register;
 import com.example.tregoapp.mechanic.model.response.User;
 import com.example.tregoapp.mechanic.repository.Repository;
+import com.example.tregoapp.customer.network.Resource;
 
 import org.jspecify.annotations.NonNull;
 
@@ -41,8 +42,8 @@ public class ViewModel extends AndroidViewModel {
     private MutableLiveData<Route> routeLiveData = new MutableLiveData<>();
     private MutableLiveData<User> customerDetailsLiveData = new MutableLiveData<>();
     private MutableLiveData<User> mechanicDetailsLiveData = new MutableLiveData<>();
-    private MutableLiveData<ShopDetail> shopDetailsLiveData = new MutableLiveData<>();
-    private MutableLiveData<ServiceDetail> serviceDetailsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Resource<ShopDetail>> shopDetailsLiveData = new MutableLiveData<>();
+    private MutableLiveData<Resource<ServiceDetail>> serviceDetailsLiveData = new MutableLiveData<>();
 
     private Job pollingJob;
 
@@ -79,8 +80,8 @@ public class ViewModel extends AndroidViewModel {
     }
     public MutableLiveData<User> getCustomerDetailsLiveData() { return customerDetailsLiveData; }
     public MutableLiveData<User> getMechanicDetailsLiveData() { return mechanicDetailsLiveData; }
-    public MutableLiveData<ShopDetail> getShopDetailsLiveData() { return shopDetailsLiveData; }
-    public MutableLiveData<ServiceDetail> getServiceDetailsLiveData() { return serviceDetailsLiveData; }
+    public MutableLiveData<Resource<ShopDetail>> getShopDetailsLiveData() { return shopDetailsLiveData; }
+    public MutableLiveData<Resource<ServiceDetail>> getServiceDetailsLiveData() { return serviceDetailsLiveData; }
 
     public MutableLiveData<List<ServiceRequest>> getShopServiceRequestHistoryLiveData() {
         return shopServiceRequestHistoryLiveData;
@@ -202,6 +203,9 @@ public class ViewModel extends AndroidViewModel {
     }
     public String getRole() {
         return repository.getRole();
+    }
+    public ShopDetail getSavedShopDetails() {
+        return repository.getSavedShopDetails();
     }
     public void loadSavedUser() {
         currentUser.setValue(repository.getSavedUser());

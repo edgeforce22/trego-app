@@ -196,8 +196,7 @@ public class CustomerSideTrackingFragment extends Fragment {
                 startActivity(intent);
 
             } else {
-                Toast.makeText(requireContext(),
-                        "Permission denied", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), \"Permission denied\", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -457,7 +456,7 @@ public class CustomerSideTrackingFragment extends Fragment {
                         }
 
                         if ("completed".equalsIgnoreCase(status)) {
-                            Toast.makeText(getContext(), "Service Completed ✅", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getContext(), "Service Completed ✅", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }

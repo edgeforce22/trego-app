@@ -165,9 +165,9 @@ public class ShopRegistrationFragment extends Fragment {
 //
 //                    registerShopBtn.setText("Register Shop");
                 } else {
-                    Toast.makeText(requireContext(),
-                            "Location fetched failed",
-                            Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(requireContext(),
+                    //         "Location fetched failed",
+                    //         Toast.LENGTH_SHORT).show();
                 }
             });
 //            }
@@ -185,23 +185,23 @@ public class ShopRegistrationFragment extends Fragment {
         shopContactNumber.isEmpty() &&
         shopOpeningTime.isEmpty() &&
         shopClosingTime.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter all the required field", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter all the required field", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopName.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the shop name", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the shop name", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopContactNumber.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the shop contact number", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the shop contact number", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopOpeningTime.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the shop opening time", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the shop opening time", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopClosingTime.isEmpty()) {
-            Toast.makeText(requireContext(), "Please enter the shop closing time", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(requireContext(), "Please enter the shop closing time", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -213,7 +213,7 @@ public class ShopRegistrationFragment extends Fragment {
                 return;
             }
             LoaderManager.hide(this);
-            Toast.makeText(getContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
         });
 
         viewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {

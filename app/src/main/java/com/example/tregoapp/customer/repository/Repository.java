@@ -544,44 +544,6 @@ public class Repository {
 
 
     // ================= GET CURRENT USER =================
-    public void getCurrentUser(String uid,
-                               MutableLiveData<Resource<User>> currentUser) {
-
-        currentUser.postValue(Resource.loading(null));
-
-        api.getCurrentUser(new GetRequestById(uid)).enqueue(new Callback<ApiResponse<User>>() {
-
-            @Override
-            public void onResponse(Call<ApiResponse<User>> call,
-                                   Response<ApiResponse<User>> response) {
-
-                if (response.isSuccessful() && response.body() != null) {
-
-                    ApiResponse<User> body = response.body();
-
-                    if (body.getSuccess() && body.getData() != null) {
-
-                        sessionManager.saveUser(body.getData());
-                        currentUser.postValue(Resource.success(body.getData()));
-
-                    } else {
-                        currentUser.postValue(Resource.error(body.getMessage(), null));
-                    }
-
-                } else {
-                    String errorMsg = parseError(response);
-                    currentUser.postValue(Resource.error(errorMsg, null));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ApiResponse<User>> call, Throwable t) {
-                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
-                Log.d("API_FAILURE", msg);
-                currentUser.postValue(Resource.error(msg, null));
-            }
-        });
-    }
 
 //    public void getNearbyMechanics(double lat,
 //                                   double lng,
@@ -680,7 +642,13 @@ public class Repository {
             @Override
             public void onResponse(Call<ApiResponse<User>> call, Response<ApiResponse<User>> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    liveData.postValue(Resource.success(response.body().getData()));
+                    ApiResponse<User> body = response.body();
+                    if (body.getSuccess() && body.getData() != null) {
+                        sessionManager.saveUser(body.getData()); // Update local session
+                        liveData.postValue(Resource.success(body.getData()));
+                    } else {
+                        liveData.postValue(Resource.error(body.getMessage(), null));
+                    }
                 } else {
                     liveData.postValue(Resource.error(parseError(response), null));
                 }

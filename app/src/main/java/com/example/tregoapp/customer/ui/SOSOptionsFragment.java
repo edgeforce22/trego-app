@@ -101,7 +101,7 @@ public class SOSOptionsFragment extends Fragment {
         chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
 
             if (checkedIds.size() > 3) {
-                Toast.makeText(requireContext(), "Select maximum 3 issues", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), \"Select maximum 3 issues\", Toast.LENGTH_SHORT).show();
 
                 int lastCheckedId = checkedIds.get(checkedIds.size() - 1);
                 Chip chip = group.findViewById(lastCheckedId);
@@ -138,7 +138,7 @@ public class SOSOptionsFragment extends Fragment {
             }
 
             if (selectedServices.isEmpty()) {
-                Toast.makeText(requireContext(), "Please select at least one issue", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(requireContext(), \"Please select at least one issue\", Toast.LENGTH_SHORT).show();
                 return;
             }
 
