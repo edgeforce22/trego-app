@@ -73,6 +73,7 @@ public class VehicleRegistrationFragment extends Fragment {
         etVehicleModel = view.findViewById(R.id.etVehicleModel);
         registrationNoLayout = view.findViewById(R.id.registrationNoLayout);
         etRegistrationNumber = view.findViewById(R.id.etRegistrationNo);
+        etRegistrationNumber.setHint("TN00AA0000");
         registerVehicleBtn = view.findViewById(R.id.registerVehicleBtn);
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
@@ -130,6 +131,12 @@ public class VehicleRegistrationFragment extends Fragment {
         if (registrationNumberReq) {
             if (registrationNumber.isEmpty()) {
                 // Toast.makeText(requireContext(), "Please enter the registration number", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            // Regex for TN00AA0000 format: 2 letters, 2 digits, 2 letters, 4 digits
+            String regExp = "^[A-Z]{2}\\d{2}[A-Z]{2}\\d{4}$";
+            if (!registrationNumber.toUpperCase().matches(regExp)) {
+                Toast.makeText(requireContext(), "Invalid registration number. Format: TN00AA0000", Toast.LENGTH_SHORT).show();
                 return false;
             }
         }

@@ -177,7 +177,7 @@ s
                 android:id="@+id/registerShopBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/update_location"
+                android:text="@string/register_shop"
                 android:textColor="@color/black"
                 android:paddingVertical="14dp"
                 android:layout_marginBottom="40dp"
