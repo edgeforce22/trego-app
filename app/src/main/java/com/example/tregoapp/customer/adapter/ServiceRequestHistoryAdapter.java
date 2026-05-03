@@ -51,8 +51,14 @@ public class ServiceRequestHistoryAdapter extends RecyclerView.Adapter<ServiceRe
     public void onBindViewHolder(@NonNull ServiceRequestHistoryViewHolder holder, int position) {
         ServiceRequest serviceRequest = serviceRequestsList.get(position);
 
-        holder.tvShopName.setText(serviceRequest.getShopName() != null ? serviceRequest.getShopName() : "Shop Name");
-        holder.tvServiceName.setText(serviceRequest.getServiceName() != null ? serviceRequest.getServiceName() : "Service Name");
+        if (serviceRequest.getIsSOS()) {
+            holder.tvShopName.setText("Emergency Request");
+            holder.tvServiceName.setText(serviceRequest.getProblemDescription() != null ? serviceRequest.getProblemDescription() : "Fuel Delivery");
+        }
+        else {
+            holder.tvShopName.setText(serviceRequest.getShopName() != null ? serviceRequest.getShopName() : "Shop Name");
+            holder.tvServiceName.setText(serviceRequest.getServiceName() != null ? serviceRequest.getServiceName() : "Service Name");
+        }
         updateStatusView(holder.tvStatus, serviceRequest.getStatus());
         holder.tvPrice.setText("₹ " + String.valueOf(serviceRequest.getTotalPrice()));
         holder.tvDistance.setText(String.valueOf(serviceRequest.getTotalDistance() + " km"));
