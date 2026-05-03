@@ -32,19 +32,24 @@ import org.json.JSONObject;
 public class SOSSendingFragment extends Fragment {
 
     private static final String CUSTOMER_ID = "customer_id";
+    private static final String REQUEST_ID = "request_id";
     private String customerId;
+    private String requestId;
     private Socket socket;
 
     private Handler handler = new Handler(Looper.getMainLooper());
+
+    private ViewModel viewModel;
 
     public SOSSendingFragment() {
         // Required empty public constructor
     }
 
-    public static SOSSendingFragment newInstance(String customerId) {
+    public static SOSSendingFragment newInstance(String customerId, String requestId) {
         SOSSendingFragment fragment = new SOSSendingFragment();
         Bundle args = new Bundle();
         args.putString(CUSTOMER_ID, customerId);
+        args.putString(REQUEST_ID, requestId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,6 +59,7 @@ public class SOSSendingFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             customerId = getArguments().getString(CUSTOMER_ID);
+            requestId = getArguments().getString(REQUEST_ID);
         }
     }
 
@@ -72,6 +78,8 @@ public class SOSSendingFragment extends Fragment {
         View pulseInner = view.findViewById(R.id.pulseInner);
         TextView tvStatus = view.findViewById(R.id.tvStatus);
 
+        viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        viewModel.loadSavedUser();
 
         handler.postDelayed(() -> {
             if (!isAdded()) return;
@@ -89,8 +97,9 @@ public class SOSSendingFragment extends Fragment {
         startPulseAnimation(pulseInner, 600, 2.5f);
 
         view.findViewById(R.id.btnCancelSOS).setOnClickListener(v -> {
+            viewModel.cancelRequestedService(requestId);
             handler.removeCallbacksAndMessages(null);
-            // Toast.makeText(requireContext(), \"SOS Cancelled\", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "SOS Cancelled", Toast.LENGTH_SHORT).show();
             if (getActivity() != null) {
                 NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
             }
@@ -99,35 +108,6 @@ public class SOSSendingFragment extends Fragment {
         // Initialize Socket
         initSocket();
     }
-
-//    private void initSocket() {
-//        try {
-//            socket = IO.socket(com.example.tregoapp.BuildConfig.BASE_URL_ENDPOINT);
-//            socket.connect();
-//
-//            socket.on(Socket.EVENT_CONNECT, args -> {
-//                if (customerId != null) {
-//                    socket.emit("join_customer", customerId);
-//                }
-//            });
-//
-//            socket.on("sos_accepted", args -> {
-//                if (getActivity() == null) return;
-//
-//                JSONObject data = (JSONObject) args[0];
-//                String requestId = data.optString("requestId");
-//
-//                getActivity().runOnUiThread(() -> {
-//                    Toast.makeText(requireContext(), "Mechanic Found!", Toast.LENGTH_SHORT).show();
-//                    NavigationHelper.navigateTo(getParentFragmentManager(),
-//                            CustomerSideTrackingFragment.newInstance(requestId), true);
-//                });
-//            });
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void initSocket() {
         try {
@@ -152,7 +132,7 @@ public class SOSSendingFragment extends Fragment {
                     String requestId = data.optString("requestId");
 
                     requireActivity().runOnUiThread(() -> {
-                        // Toast.makeText(requireContext(), "Mechanic Found!", Toast.LENGTH_SHORT).show();
+                         Toast.makeText(requireContext(), "Mechanic Found!", Toast.LENGTH_SHORT).show();
 
                         NavigationHelper.navigateTo(
                                 getParentFragmentManager(),
@@ -194,16 +174,6 @@ public class SOSSendingFragment extends Fragment {
             Log.e("SOCKET_ERROR", "Socket init failed", e);
         }
     }
-
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        handler.removeCallbacksAndMessages(null);
-//        if (socket != null) {
-//            socket.off("sos_accepted");
-//            socket.disconnect();
-//        }
-//    }
 
     @Override
     public void onDestroyView() {

@@ -45,7 +45,12 @@ public class ActiveServiceRequestsAdapter extends ListAdapter<ServiceRequest, Ac
 
         holder.tvCustomerName.setText(request.getCustomerName() != null ? request.getCustomerName() : request.getCustomerId());
         holder.tvCustomerAddress.setText(request.getCustomerLocation().getAddress());
-        holder.tvService.setText(request.getServiceId());
+        if (!request.getIsSOS()) {
+            holder.tvService.setText(request.getServiceId());
+        }
+        else {
+            holder.tvService.setText(request.getProblemDescription());
+        }
         holder.tvTotalDistance.setText(request.getTotalDistance() + " km");
         holder.tvTotalDuration.setText(request.getTotalDuration() + " min");
         holder.tvCreatedAt.setText(String.valueOf(utility.formatDate(request.getCreatedAt())));

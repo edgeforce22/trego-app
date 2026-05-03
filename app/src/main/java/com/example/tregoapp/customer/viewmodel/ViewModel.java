@@ -34,9 +34,10 @@ public class ViewModel extends AndroidViewModel {
     private MutableLiveData<Resource<List<VehicleDetail>>> vehicleListResource = new MutableLiveData<>();
     private MutableLiveData<Resource<List<ServiceDetail>>> servicesListResource = new MutableLiveData<>();
     private MutableLiveData<Resource<ServiceRequest>> serviceRequestResource = new MutableLiveData<>();
+    private MutableLiveData<Resource<List<ServiceRequest>>> serviceRequestHistory = new MutableLiveData<>();
     private MutableLiveData<Resource<List<ServiceRequest>>> liveRequestResource = new MutableLiveData<>();
     private MutableLiveData<Resource<Route>> routeResource = new MutableLiveData<>();
-    private MutableLiveData<Resource<Void>> sosActionResource = new MutableLiveData<>();
+    private MutableLiveData<Resource<GetRequestById>> sosActionResource = new MutableLiveData<>();
     private MutableLiveData<Resource<Void>> genericActionResource = new MutableLiveData<>();
     private MutableLiveData<Resource<VehicleDetail>> vehicleRegistrationResource = new MutableLiveData<>();
     private MutableLiveData<Resource<User>> customerDetails = new MutableLiveData<>();
@@ -67,6 +68,10 @@ public class ViewModel extends AndroidViewModel {
         return servicesListResource;
     }
 
+    public MutableLiveData<Resource<List<ServiceRequest>>> getServiceRequestHistory() {
+        return serviceRequestHistory;
+    }
+
     public MutableLiveData<Resource<ServiceRequest>> getServiceRequestResource() {
         return serviceRequestResource;
     }
@@ -79,7 +84,7 @@ public class ViewModel extends AndroidViewModel {
         return routeResource;
     }
 
-    public MutableLiveData<Resource<Void>> getSosActionResource() {
+    public MutableLiveData<Resource<GetRequestById>> getSosActionResource() {
         return sosActionResource;
     }
 
@@ -130,12 +135,16 @@ public class ViewModel extends AndroidViewModel {
         repository.createServiceRequest(serviceRequest, serviceRequestResource);
     }
 
-    public void sendSOS(String customerId, double latitude, double longitude, List<String> problemTypes) {
-        repository.sendSOS(new SOSRequest(customerId, latitude, longitude, problemTypes), sosActionResource);
+    public void sendSOS(String customerId, double latitude, double longitude, String address, List<String> problemTypes) {
+        repository.sendSOS(new SOSRequest(customerId, latitude, longitude, address, problemTypes), sosActionResource);
     }
 
     public void getServiceRequest(String requestId) {
         repository.getServiceRequest(new GetRequestById(requestId), serviceRequestResource);
+    }
+
+    public void getServiceRequestHistory(String customerId) {
+        repository.getServiceRequestHistory(new GetRequestById(customerId), serviceRequestHistory);
     }
 
     public void getLiveRequestedRequest(String customerId) {

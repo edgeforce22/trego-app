@@ -2,7 +2,9 @@ package com.example.tregoapp.customer.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class VehicleDetail {
+import java.io.Serializable;
+
+public class VehicleDetail implements Serializable {
 
     @SerializedName("_id")
     private String vehicleId;

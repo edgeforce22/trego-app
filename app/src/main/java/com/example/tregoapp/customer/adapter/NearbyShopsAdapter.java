@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tregoapp.customer.listener.OnItemClickListener;
 import com.example.tregoapp.R;
 import com.example.tregoapp.customer.model.ShopDetail;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +74,10 @@ public class NearbyShopsAdapter extends RecyclerView.Adapter<NearbyShopsAdapter.
             onItemClickListener.onClick(shop);
         });
 
+        holder.shopCardView.setOnClickListener(v -> {
+            onItemClickListener.onClickShop(shop);
+        });
+
     }
 
     @Override
@@ -81,11 +86,14 @@ public class NearbyShopsAdapter extends RecyclerView.Adapter<NearbyShopsAdapter.
     }
 
     public static class CustomerViewHolder extends RecyclerView.ViewHolder {
-        TextView tvShopName, tvRating, tvAddress, tvService, tvDistance, tvDuration, selectBtn;
+
+        private MaterialCardView shopCardView;
+        private TextView tvShopName, tvRating, tvAddress, tvService, tvDistance, tvDuration, selectBtn;
 
         public CustomerViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            shopCardView = itemView.findViewById(R.id.shopCardView);
             tvShopName = itemView.findViewById(R.id.tvShopName);
             tvRating = itemView.findViewById(R.id.tvRating);
             tvAddress = itemView.findViewById(R.id.tvAddress);

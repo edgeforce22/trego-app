@@ -355,22 +355,22 @@ public class Repository {
 
     // ================= SEND SOS SERVICE REQUEST =================
     public void sendSOS(SOSRequest request,
-                        MutableLiveData<Resource<Void>> state) {
+                        MutableLiveData<Resource<GetRequestById>> state) {
 
         state.postValue(Resource.loading(null));
 
-        api.sendSOS(request).enqueue(new Callback<ApiResponse>() {
+        api.sendSOS(request).enqueue(new Callback<ApiResponse<GetRequestById>>() {
             @Override
-            public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+            public void onResponse(Call<ApiResponse<GetRequestById>> call, Response<ApiResponse<GetRequestById>> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-                    ApiResponse body = response.body();
+                    ApiResponse<GetRequestById> body = response.body();
 
                     if (body.getSuccess()) {
 
                         Log.d("API_SUCCESS", body.getMessage());
 
-                        state.postValue(Resource.success(null));
+                        state.postValue(Resource.success(body.getData()));
                     } else {
                         state.postValue(Resource.error(body.getMessage(), null));
                     }
@@ -382,7 +382,7 @@ public class Repository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<GetRequestById>> call, Throwable t) {
                 String msg = t.getMessage() != null ? t.getMessage() : "Network error";
                 Log.d("API_FAILURE", msg);
                 state.postValue(Resource.error(msg, null));
@@ -424,6 +424,45 @@ public class Repository {
                 String msg = t.getMessage() != null ? t.getMessage() : "Network error";
                 Log.d("API_FAILURE", msg);
                 serviceRequestLiveData.postValue(Resource.error(msg, null));
+            }
+        });
+    }
+
+
+    // ================= GET SERVICE REQUEST HISTORY BY ID =================
+    public void getServiceRequestHistory(GetRequestById request,
+                                  MutableLiveData<Resource<List<ServiceRequest>>> serviceRequestHistoryLiveData) {
+
+        serviceRequestHistoryLiveData.postValue(Resource.loading(null));
+
+        api.getServiceRequestHistory(request).enqueue(new Callback<ApiResponse<List<ServiceRequest>>>() {
+            @Override
+            public void onResponse(Call<ApiResponse<List<ServiceRequest>>> call, Response<ApiResponse<List<ServiceRequest>>> response) {
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    ApiResponse<List<ServiceRequest>> body = response.body();
+
+                    if (body.getSuccess()) {
+
+                        Log.d("API_SUCCESS", body.getMessage());
+
+                        serviceRequestHistoryLiveData.postValue(Resource.success(body.getData()));
+                    } else {
+                        serviceRequestHistoryLiveData.postValue(Resource.error(body.getMessage(), null));
+                    }
+
+                } else {
+                    String errorMsg = parseError(response);
+                    serviceRequestHistoryLiveData.postValue(Resource.error(errorMsg, null));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ApiResponse<List<ServiceRequest>>> call, Throwable t) {
+                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
+                Log.d("API_FAILURE", msg);
+                serviceRequestHistoryLiveData.postValue(Resource.error(msg, null));
             }
         });
     }

@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tregoapp.mechanic.model.CancelRequestById;
 import com.example.tregoapp.mechanic.model.GetRequestByTwoId;
 import com.example.tregoapp.mechanic.model.map.Route;
 import com.example.tregoapp.mechanic.model.Location;
@@ -141,8 +142,8 @@ public class ViewModel extends AndroidViewModel {
         repository.acceptServiceRequest(request, authState, acceptServiceRequestLiveData);
     }
 
-    public void cancelServiceRequest(String requestId) {
-        GetRequestById request = new GetRequestById(requestId);
+    public void cancelServiceRequest(String requestId, String mechanicId) {
+        CancelRequestById request = new CancelRequestById(requestId, mechanicId);
         repository.cancelServiceRequest(request, authState, shopServiceRequestsLiveData);
     }
 

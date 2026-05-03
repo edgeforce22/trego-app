@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tregoapp.customer.adapter.NearbyShopsAdapter;
+import com.example.tregoapp.customer.dialog.ShopDetailDialogFragment;
 import com.example.tregoapp.customer.listener.OnItemClickListener;
 import com.example.tregoapp.R;
 import com.example.tregoapp.customer.model.ShopDetail;
@@ -35,6 +36,7 @@ public class NearbyShopsFragment extends Fragment implements OnItemClickListener
     private double latitude;
     private double longitude;
 
+    private ImageView backBtn;
     private RecyclerView recyclerView;
 
     private ViewModel viewModel;
@@ -53,6 +55,7 @@ public class NearbyShopsFragment extends Fragment implements OnItemClickListener
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         root = view;
+        backBtn = view.findViewById(R.id.backBtn);
         recyclerView = view.findViewById(R.id.recyclerView);
 
         adapter = new NearbyShopsAdapter(this);
@@ -74,6 +77,12 @@ public class NearbyShopsFragment extends Fragment implements OnItemClickListener
             if (lat != 0 && lon != 0) {
                 LoaderManager.show(this);
                 viewModel.getNearbyShops(latitude, longitude);
+            }
+        });
+
+        backBtn.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
             }
         });
     }
@@ -101,6 +110,14 @@ public class NearbyShopsFragment extends Fragment implements OnItemClickListener
         openShopRequest(shopDetail);
     }
 
+    @Override
+    public void onClickShop(ShopDetail shopDetail) {
+        ShopDetailDialogFragment.newInstance(shopDetail)
+                .show(
+                        getParentFragmentManager(),
+                        "ShopDetailDialog"
+                );
+    }
     private void openShopRequest(ShopDetail shopDetail) {
         CreateRequestFragment createRequestFragment = CreateRequestFragment.newInstance(shopDetail);
         com.example.tregoapp.customer.navigation.NavigationHelper.navigateTo(getParentFragmentManager(), createRequestFragment);

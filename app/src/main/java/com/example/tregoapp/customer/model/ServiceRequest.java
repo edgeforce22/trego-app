@@ -55,6 +55,21 @@ public class ServiceRequest {
     @SerializedName("serviceName")
     private String serviceName;
 
+    @SerializedName("isActive")
+    private boolean isActive;
+
+    @SerializedName("isSOS")
+    private boolean isSOS;
+
+    @SerializedName("rejectedCount")
+    private String rejectedCount;
+
+    @SerializedName("totalMechanics")
+    private String totalMechanics;
+
+    @SerializedName("isCompletelyRejected")
+    private boolean isCompletelyRejected;
+
     public ServiceRequest(String customerId, String shopId, String vehicleId, String serviceId, String problemDescription, Location customerLocation, double totalPrice, double totalDistance, double totalDuration) {
         this.customerId = customerId;
         this.shopId = shopId;
@@ -197,5 +212,29 @@ public class ServiceRequest {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public String getRejectedCount() {
+        return rejectedCount;
+    }
+
+    public String getTotalMechanics() {
+        return totalMechanics;
+    }
+
+    public boolean getIsCompletelyRejected() {
+        return isCompletelyRejected;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public boolean getIsSOS() {
+        return isSOS;
+    }
+
+    public boolean isCompletelyRejected() {
+        return isCompletelyRejected;
     }
 }

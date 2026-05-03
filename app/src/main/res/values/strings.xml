@@ -48,7 +48,7 @@
     <string name="vehicle_type">Vehicle Type</string>
     <string name="vehicel_brand">Vehicle Brand</string>
     <string name="vehicel_model">Vehicle Model</string>
-    <string name="registration_number">Registration Number</string>
+    <string name="registration_number">i.e. TN00AA0000</string>
 
     // For Shop Registration
     <string name="shop">Shop</string>

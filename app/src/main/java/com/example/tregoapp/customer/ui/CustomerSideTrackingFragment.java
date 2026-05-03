@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -294,12 +295,21 @@ public class CustomerSideTrackingFragment extends Fragment {
         customerMarker.setPosition(point);
         customerMarker.setTitle("Customer Location");
 
-        Drawable icon = requireContext().getDrawable(R.drawable.customer_marker);
-        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
+        Drawable icon = ContextCompat.getDrawable(requireContext(), R.drawable.pointer);
 
-        Bitmap smallmarker = Bitmap.createScaledBitmap(bitmap, 40, 40, false);
+        Bitmap bitmap = Bitmap.createBitmap(
+                icon.getIntrinsicWidth(),
+                icon.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
 
-        customerMarker.setIcon(new BitmapDrawable(getResources(), smallmarker));
+        Canvas canvas = new Canvas(bitmap);
+        icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        icon.draw(canvas);
+
+        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmap, 125, 125, false);
+
+        customerMarker.setIcon(new BitmapDrawable(getResources(), smallMarker));
         customerMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     }
 
@@ -313,11 +323,20 @@ public class CustomerSideTrackingFragment extends Fragment {
         mechanicMarker.setTitle("Mechanic Location");
 
         Drawable icon = requireContext().getDrawable(R.drawable.mechanic_marker);
-        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
 
-        Bitmap smallmarker = Bitmap.createScaledBitmap(bitmap, 40, 40, false);
+        Bitmap bitmap = Bitmap.createBitmap(
+                icon.getIntrinsicWidth(),
+                icon.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
 
-        mechanicMarker.setIcon(new BitmapDrawable(getResources(), smallmarker));
+        Canvas canvas = new Canvas(bitmap);
+        icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        icon.draw(canvas);
+
+        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmap, 125, 125, false);
+
+        mechanicMarker.setIcon(new BitmapDrawable(getResources(), smallMarker));
         mechanicMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
     }
 

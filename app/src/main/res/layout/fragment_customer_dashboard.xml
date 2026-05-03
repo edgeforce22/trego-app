@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
     android:background="@color/white"
     android:fillViewport="true">
 
@@ -19,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="Hello, User"
             android:textColor="@color/black"
-            android:textSize="26sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/profileBtn"
             app:layout_constraintEnd_toStartOf="@+id/profileBtn"
@@ -32,9 +33,8 @@
             android:layout_height="44dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardBackgroundColor="@color/primary_color"
-            app:cardCornerRadius="22dp"
-            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:strokeColor="@color/primary_color"
@@ -45,8 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="8dp"
-                android:src="@drawable/user"
-                app:tint="@color/white"
+                android:src="@drawable/profile_new"
                 tools:ignore="ContentDescription" />
 
         </com.google.android.material.card.MaterialCardView>
@@ -57,18 +56,29 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:visibility="gone"
             app:cardBackgroundColor="#FFF8E1"
             app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
+            app:cardElevation="1dp"
             app:layout_constraintTop_toBottomOf="@id/profileBtn"
             app:strokeColor="#FFD54F"
-            app:strokeWidth="1.5dp">
+            app:strokeWidth="0.5dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp">
+                android:paddingTop="20dp"
+                android:paddingHorizontal="20dp"
+                android:paddingBottom="10dp">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/liveAnimation"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/live"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"  />
 
                 <TextView
                     android:id="@+id/tvLiveReqShopName"
@@ -76,13 +86,15 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:layout_marginStart="5dp"
                     android:text="Shop Name"
                     android:textColor="#5D4037"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toStartOf="@+id/tvLiveReqStatus"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toEndOf="@+id/liveAnimation"
+                    app:layout_constraintTop_toTopOf="@+id/liveAnimation"
+                    app:layout_constraintBottom_toBottomOf="@+id/liveAnimation"/>
 
                 <TextView
                     android:id="@+id/tvLiveReqStatus"
@@ -95,39 +107,81 @@
                     android:textColor="@color/white"
                     android:textSize="11sp"
                     android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/tvLiveReqShopName"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="@id/tvLiveReqShopName" />
 
                 <TextView
                     android:id="@+id/tvLiveReqService"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:maxWidth="250dp"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:maxLines="3"
                     android:text="Service Name"
                     android:textColor="#795548"
                     android:textSize="14sp"
-                    app:layout_constraintEnd_toStartOf="@+id/btnTrack"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvLiveReqShopName" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnTrack"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                <TextView
+                    android:id="@+id/tvLiveReqTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
-                    android:text="Track Progress"
-                    android:textAllCaps="false"
-                    android:textColor="#E65100"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="5dp"
+                    android:text="12 Mar 2025 01:10 PM"
+                    android:textColor="#795548"
+                    android:textSize="8sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tvLiveReqStatus" />
+
+                <!-- Perfectly Matched Buttons for Cream/Gold Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLiveReqService"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <!-- Cancel Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCancelRequest"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFF3E0"
+                        android:text="Cancel Request"
+                        android:textSize="11dp"
+                        android:textColor="#8D6E63"
+                        android:textStyle="bold"
+                        app:cornerRadius="18dp"
+                        app:elevation="0dp"
+                        app:rippleColor="#20A1887F"
+                        app:strokeColor="#D7CCC8"
+                        app:strokeWidth="1dp" />
+
+                    <!-- Track Button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTrack"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#6D4C41"
+                        android:text="Track Request"
+                        android:textSize="11dp"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        app:cornerRadius="18dp"
+                        app:elevation="4dp"
+                        app:rippleColor="#30FFFFFF" />
+
+                </LinearLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -165,11 +219,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvLocationTitle"
             app:strokeColor="#795548"
-            app:strokeWidth="0.8dp">
+            app:strokeWidth="0.5dp">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:focusable="true" >
 
                 <org.osmdroid.views.MapView
                     android:id="@+id/map"
@@ -184,6 +240,7 @@
                     android:layout_margin="16dp"
                     android:clickable="true"
                     android:focusable="true"
+                    app:strokeWidth="0dp"
                     app:cardBackgroundColor="?attr/colorSurface"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="4dp">
@@ -216,6 +273,20 @@
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/btnFocusLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="55dp"
+                    android:src="@drawable/focus"
+                    app:backgroundTint="@color/white"
+                    app:tint="#6D4C41"
+                    app:elevation="5dp"
+                    app:fabCustomSize="40dp"
+                    app:maxImageSize="25dp" />
 
             </FrameLayout>
 

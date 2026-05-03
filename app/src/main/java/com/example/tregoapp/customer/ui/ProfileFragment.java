@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.tregoapp.R;
 import com.example.tregoapp.WelcomeFragment;
 
+import com.example.tregoapp.customer.bottomsheet.VehicleListFragment;
 import com.example.tregoapp.customer.navigation.NavigationHelper;
 import com.example.tregoapp.customer.utils.LoaderManager;
 import com.example.tregoapp.customer.viewmodel.ViewModel;
@@ -27,12 +28,14 @@ import com.google.android.material.card.MaterialCardView;
 
 public class ProfileFragment extends Fragment {
 
-    private ImageView backBtn;
+    private MaterialCardView backBtn;
     private TextView tvName;
-//    private TextView tvId;
+    private TextView tvId;
     private TextView tvPhoneNumber;
     private TextView tvAddress;
-    private LinearLayout goToRegisterVehicle;
+    private LinearLayout goToAllVehicles;
+    private LinearLayout goToRequestHistory;
+
     private LinearLayout logoutBtn;
     private ViewModel viewModel;
     private String customerId;
@@ -50,12 +53,15 @@ public class ProfileFragment extends Fragment {
         backBtn = view.findViewById(R.id.backBtn);
         logoutBtn = view.findViewById(R.id.logoutBtn);
         tvName = view.findViewById(R.id.tvName);
+        tvId = view.findViewById(R.id.tvCustomerId);
         tvPhoneNumber = view.findViewById(R.id.tvPhoneNumber);
         tvAddress = view.findViewById(R.id.tvAddress);
-        goToRegisterVehicle = view.findViewById(R.id.goToRegisterVehicle);
+        goToAllVehicles = view.findViewById(R.id.goToAllVehicles);
+        goToRequestHistory = view.findViewById(R.id.goToRequestHistory);
 
         // Debug: Clear hardcoded text to verify code execution
         tvName.setText("...");
+        tvId.setText("...");
         tvPhoneNumber.setText("...");
         tvAddress.setText("...");
 
@@ -63,7 +69,6 @@ public class ProfileFragment extends Fragment {
         
         viewModelObserver();
 
-        // Load user data from local storage (Session Preferences)
         viewModel.loadSavedUser();
 
         backBtn.setOnClickListener(v -> {
@@ -84,12 +89,24 @@ public class ProfileFragment extends Fragment {
                     .show();
         });
 
-        goToRegisterVehicle.setOnClickListener(v -> {
+        goToAllVehicles.setOnClickListener(v -> {
+            if (customerId == null || customerId.isEmpty()) {
+                Toast.makeText(requireContext(),
+                        "Customer Id is empty",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            VehicleListFragment sheet = VehicleListFragment.newInstance(customerId);
+            sheet.show(getParentFragmentManager(), "VehicleListBottomSheet");
+        });
+
+        goToRequestHistory.setOnClickListener(v -> {
             if (customerId == null || customerId.isEmpty()) {
                 Toast.makeText(requireContext(), "Customer Id is empty", Toast.LENGTH_SHORT).show();
                 return;
             }
-            NavigationHelper.navigateTo(getParentFragmentManager(), VehicleRegistrationFragment.newInstance(customerId));
+            NavigationHelper.navigateTo(getParentFragmentManager(), ServiceRequestsHistoryFragment.newInstance(customerId));
         });
     }
 
@@ -110,10 +127,17 @@ public class ProfileFragment extends Fragment {
                 customerId = user.getId();
                 
                 tvName.setText(user.getName() != null && !user.getName().isEmpty() ? user.getName() : "No Name");
-                
+
+                String id = user.getId();
+                if (id != null && !id.isEmpty()) {
+                    tvId.setText("ID : " + id);
+                } else {
+                    tvId.setText("TREGOID12345");
+                }
+
                 String phone = user.getPhoneNumber();
                 if (phone != null && !phone.isEmpty()) {
-                    tvPhoneNumber.setText(phone.startsWith("91+") ? phone : "91+ " + phone);
+                    tvPhoneNumber.setText(phone);
                 } else {
                     tvPhoneNumber.setText("Mobile Not Provided");
                 }

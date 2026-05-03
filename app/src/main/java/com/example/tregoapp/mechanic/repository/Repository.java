@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.tregoapp.mechanic.model.CancelRequestById;
 import com.example.tregoapp.mechanic.model.GetRequestByTwoId;
 import com.example.tregoapp.mechanic.model.map.Route;
 import com.example.tregoapp.mechanic.model.map.RouteResponse;
@@ -537,7 +538,7 @@ public class Repository {
 
 
     // ================= CANCEL SERVICE REQUEST  =================
-    public void cancelServiceRequest(GetRequestById request,
+    public void cancelServiceRequest(CancelRequestById request,
                                      MutableLiveData<AuthState> authState,
                                      MutableLiveData<List<ServiceRequest>> serviceRequests) {
         api.cancelServiceRequest(request).enqueue(new Callback<ApiResponse<ServiceRequest>>() {
@@ -948,16 +949,20 @@ public class Repository {
                 if (response.isSuccessful() && response.body() != null) {
                     ApiResponse<ServiceDetail> body = response.body();
                     if (body.getSuccess()) {
+                        Log.d("API_SUCESS", "Got service details" + body.getData().toString());
                         liveData.postValue(Resource.success(body.getData()));
                     } else {
+                        Log.d("API_SUCESS", "Error in service details" + body.getData().toString());
                         liveData.postValue(Resource.error(body.getMessage(), null));
                     }
                 } else {
+                    Log.d("API_SUCESS", "Error in service details" + response.body().getData().toString());
                     liveData.postValue(Resource.error(parseError(response), null));
                 }
             }
             @Override
             public void onFailure(Call<ApiResponse<ServiceDetail>> call, Throwable t) {
+                Log.d("API_SUCESS", "Error in service details" + t.getMessage());
                 liveData.postValue(Resource.error(t.getMessage(), null));
             }
         });

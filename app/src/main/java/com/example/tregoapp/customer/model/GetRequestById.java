@@ -10,4 +10,8 @@ public class GetRequestById {
     public GetRequestById(String id) {
         this.id = id;
     }
+
+    public String getId() {
+        return id;
+    }
 }

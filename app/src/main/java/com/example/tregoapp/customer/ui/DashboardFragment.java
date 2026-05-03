@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -30,6 +32,7 @@ import com.example.tregoapp.customer.model.ShopDetail;
 import com.example.tregoapp.customer.utils.DeviceLocationHelper;
 import com.example.tregoapp.customer.utils.EmptyStateHelper;
 import com.example.tregoapp.customer.utils.LoaderManager;
+import com.example.tregoapp.customer.utils.Utility;
 import com.example.tregoapp.customer.viewmodel.ViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.card.MaterialCardView;
@@ -40,6 +43,8 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 import com.example.tregoapp.customer.navigation.NavigationHelper;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 import io.socket.client.IO;
@@ -57,6 +62,7 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
     private MaterialCardView profileBtn;
     private Marker customerMarker;
     private TextView tvLiveAddress;
+    private FloatingActionButton btnFocusLocation;
     private TextView tvDashboardName;
     private MaterialCardView goToNearbyShops;
     private MaterialCardView goToSOS;
@@ -66,6 +72,8 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
     private TextView tvLiveReqStatus;
     private TextView tvLiveReqShopName;
     private TextView tvLiveReqService;
+    private TextView tvLiveReqTime;
+    private View btnCancelRequest;
     private View btnTrack;
 
     private double latitude;
@@ -94,6 +102,7 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         root = view;
         mapView = view.findViewById(R.id.map);
         tvLiveAddress = view.findViewById(R.id.tvLiveAddress);
+        btnFocusLocation = view.findViewById(R.id.btnFocusLocation);
         profileBtn = view.findViewById(R.id.profileBtn);
         tvDashboardName = view.findViewById(R.id.tvDashboardName);
         goToNearbyShops = view.findViewById(R.id.goToNearbyShops);
@@ -105,6 +114,8 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         tvLiveReqStatus = view.findViewById(R.id.tvLiveReqStatus);
         tvLiveReqShopName = view.findViewById(R.id.tvLiveReqShopName);
         tvLiveReqService = view.findViewById(R.id.tvLiveReqService);
+        tvLiveReqTime = view.findViewById(R.id.tvLiveReqTime);
+        btnCancelRequest = view.findViewById(R.id.btnCancelRequest);
         btnTrack = view.findViewById(R.id.btnTrack);
 
         adapter = new ShopListAdapter(this);
@@ -116,6 +127,7 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
         viewModel.loadSavedUser();
         viewModelObserver();
+        viewModel.getLiveRequestedRequest(customerId);
 
         setupMap();
         checkPermissionAndFetchLocation();
@@ -139,47 +151,15 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
             }
         });
 
-//        // UI ALIGNMENTS START //
-//
-//        int screenHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-//        int mapHeight = (int) (screenHeight * 0.27);
-//
-//        ViewGroup.LayoutParams params = mapView.getLayoutParams();
-//        params.height = mapHeight;
-//        mapView.setLayoutParams(params);
-//
-//        View bottomSheet = view.findViewById(R.id.bottomSheet);
-//        BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(bottomSheet);
-//
-//        int screenHeight2 = Resources.getSystem().getDisplayMetrics().heightPixels;
-//        int peekHeight = (int) (screenHeight2 * 0.75);
-//
-//        // BottomSheet setup
-//        behavior.setPeekHeight(peekHeight);
-//        behavior.setFitToContents(false);
-//        behavior.setHalfExpandedRatio(0.75f);
-//        behavior.setExpandedOffset(0);
-//        behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//
-//        // MAIN FIX: Move card along with BottomSheet
-//        bottomSheet.post(() -> {
-//            card.setY(bottomSheet.getTop() - card.getHeight() - 20);
-//        });
-//
-//        behavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-//                float sheetTop = bottomSheet.getTop();
-//
-//                // Keep card just above sheet
-//                card.setY(sheetTop - card.getHeight() - 20);
-//            }
-//
-//            @Override
-//            public void onStateChanged(@NonNull View bottomSheet, int newState) {}
-//        });
-//
-//        // UI ALIGNMENTS END//
+        btnCancelRequest.setOnClickListener(v -> {
+            Object tag = btnCancelRequest.getTag();
+            viewModel.cancelRequestedService(String.valueOf(tag));
+            Toast.makeText(requireContext(), "Request Cancelled", Toast.LENGTH_SHORT).show();
+            viewModel.getLiveRequestedRequest(customerId);
+        });
+
+        mapMoveListener();
+        locationFocusListener();
     }
 
     @Override
@@ -187,7 +167,7 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         super.onResume();
         mapView.onResume();
 
-//        checkPermissionAndFetchLocation();
+        viewModel.getLiveRequestedRequest(customerId);
         if (latitude != 0 && longitude != 0) {
             mapView.post(() -> showLocationOnMap(latitude, longitude));
         }
@@ -198,6 +178,7 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         super.onPause();
         mapView.onPause();
 
+        viewModel.getLiveRequestedRequest(customerId);
         if (locationHelper != null) {
             locationHelper.stopLocationUpdates();
         }
@@ -237,6 +218,10 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
     @Override
     public void onClick(ShopDetail shopDetail) {
         openShopRequest(shopDetail);
+    }
+
+    @Override
+    public void onClickShop(ShopDetail shopDetail) {
     }
 
     private void setupMap() {
@@ -294,6 +279,7 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
     }
 
     private void showLocationOnMap(double lat, double lng) {
+
         GeoPoint point = new GeoPoint(lat, lng);
 
         if (customerMarker == null) {
@@ -306,15 +292,24 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         customerMarker.setPosition(point);
         customerMarker.setTitle("You are here");
 
-        Drawable icon = ContextCompat.getDrawable(requireContext(), R.drawable.marker);
-        Bitmap bitmap = ((BitmapDrawable) icon).getBitmap();
-        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmap, 40, 40, false);
+        // XML Vector Drawable Fix
+        Drawable icon = ContextCompat.getDrawable(requireContext(), R.drawable.pointer);
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                icon.getIntrinsicWidth(),
+                icon.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888
+        );
+
+        Canvas canvas = new Canvas(bitmap);
+        icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        icon.draw(canvas);
+
+        Bitmap smallMarker = Bitmap.createScaledBitmap(bitmap, 125, 125, false);
 
         customerMarker.setIcon(new BitmapDrawable(getResources(), smallMarker));
         customerMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
 
-        // FIX: Animate directly to the true point!
-        // No need for "offsetLat" anymore.
         mapView.getController().animateTo(point);
         mapView.getController().setZoom(16.0);
 
@@ -331,6 +326,39 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
                 .commit();
     }
 
+    private void mapMoveListener() {
+        mapView.setOnTouchListener((v, event) -> {
+
+            switch (event.getAction()) {
+
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_MOVE:
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                    break;
+            }
+
+            return false; // allow map gestures
+        });
+    }
+
+    private void locationFocusListener() {
+
+        btnFocusLocation.setOnClickListener(v -> {
+
+            if (latitude != 0 && longitude != 0) {
+
+                GeoPoint point = new GeoPoint(latitude, longitude);
+
+                mapView.getController().animateTo(point);
+                mapView.getController().setZoom(18.0);
+            }
+        });
+    }
     private void viewModelObserver() {
         viewModel.getAuthResource().observe(getViewLifecycleOwner(), resource -> {
             LoaderManager.handleResource(this, resource);
@@ -370,19 +398,31 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
                     
                     // If the request is 'pending', don't allow tracking yet
                     boolean isTrackable = !"pending".equalsIgnoreCase(activeRequest.getStatus());
-                    
+
+//                    if ("in_progress".equalsIgnoreCase(activeRequest.getStatus()) && !activeRequest.getIsActive()) {
+//                        return;
+//                    }
+
                     liveRequestCard.setVisibility(View.VISIBLE);
-                    tvLiveReqStatus.setText(capitalize(activeRequest.getStatus()));
                     if (activeRequest.getShopName() != null) {
                         tvLiveReqShopName.setText(activeRequest.getShopName());
                     } else if (activeRequest.getShopId() != null) {
                         viewModel.fetchShopDetails(activeRequest.getShopId());
                     }
                     tvLiveReqService.setText(activeRequest.getServiceName() != null ? activeRequest.getServiceName() : "Service Request");
+                    tvLiveReqTime.setText(Utility.getInstance().formatDate2(activeRequest.getCreatedAt()));
                     
                     if (isTrackable) {
-                        btnTrack.setVisibility(View.VISIBLE);
-                        btnTrack.setTag(activeRequest.getId());
+                        if ("requested".equalsIgnoreCase(activeRequest.getStatus())) {
+                            btnCancelRequest.setVisibility(View.VISIBLE);
+                            btnTrack.setVisibility(View.GONE);
+                            btnCancelRequest.setTag(activeRequest.getId());
+                        }
+                        else {
+                            btnTrack.setVisibility(View.VISIBLE);
+                            btnCancelRequest.setVisibility(View.GONE);
+                            btnTrack.setTag(activeRequest.getId());
+                        }
                     } else {
                         btnTrack.setVisibility(View.GONE);
                     }
@@ -410,17 +450,24 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         if (status == null) return;
         switch (status.toLowerCase()) {
             case "pending":
+                tvLiveReqStatus.setText("Pending");
                 tvLiveReqStatus.setBackgroundResource(R.drawable.status_pending_bg);
                 break;
             case "accepted":
+                tvLiveReqStatus.setText("Accepted");
+                tvLiveReqStatus.setBackgroundResource(R.drawable.status_pending_bg);
+                break;
             case "ongoing":
             case "in_progress":
-                tvLiveReqStatus.setBackgroundResource(R.drawable.status_pending_bg); // Reuse or add status_ongoing_bg
+                tvLiveReqStatus.setText("In Progress");
+                tvLiveReqStatus.setBackgroundResource(R.drawable.status_pending_bg);
                 break;
             case "waiting_for_confirmation":
+                tvLiveReqStatus.setText("Wait for Confirmation");
                 tvLiveReqStatus.setBackgroundResource(R.drawable.status_pending_bg);
                 break;
             default:
+                tvLiveReqStatus.setText("Pending");
                 tvLiveReqStatus.setBackgroundResource(R.drawable.status_pending_bg);
                 break;
         }
@@ -448,10 +495,5 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private String capitalize(String str) {
-        if (str == null || str.isEmpty()) return str;
-        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
     }
 }

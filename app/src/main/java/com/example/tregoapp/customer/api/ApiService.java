@@ -67,10 +67,15 @@ public interface ApiService {
     );
 
     @POST("customer/auth/sendSOS")
-    Call<ApiResponse> sendSOS(@Body SOSRequest request);
+    Call<ApiResponse<GetRequestById>> sendSOS(@Body SOSRequest request);
 
     @POST("customer/auth/getServiceRequest")
     Call<ApiResponse<ServiceRequest>> getServiceRequest(
+            @Body GetRequestById request
+    );
+
+    @POST("customer/auth/getServiceRequestHistory")
+    Call<ApiResponse<List<ServiceRequest>>> getServiceRequestHistory(
             @Body GetRequestById request
     );
 

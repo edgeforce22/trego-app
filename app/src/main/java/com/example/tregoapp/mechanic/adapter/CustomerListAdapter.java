@@ -74,11 +74,12 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
             }
         }
 
-        String services = item.getServiceId();
         if ("SOS".equalsIgnoreCase(item.getType())) {
+            String services = item.getProblemDescription();
             holder.tvService.setText(services != null ? services : "Emergency Assistance Required");
-            holder.tvDistance.setText(item.getTotalDistance() > 0 ? item.getTotalDistance() + " km away" : "Nearby");
+            holder.tvDistance.setText(item.getTotalDistance() > 0 ? String.format("%.1f km away", item.getTotalDistance()) : "Nearby");
         } else {
+            String services = item.getServiceName();
             holder.tvService.setText(services != null ? services : "N/A");
             holder.tvDistance.setText(item.getTotalDistance() + " km");
             if (holder.tvDuration != null) {
@@ -139,21 +140,49 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
             new DiffUtil.ItemCallback<ServiceRequest>() {
 
                 @Override
-                public boolean areItemsTheSame(@NonNull ServiceRequest oldItem,
-                                               @NonNull ServiceRequest newItem) {
-                    return oldItem.getId().equals(newItem.getId());
+                public boolean areItemsTheSame(
+                        @NonNull ServiceRequest oldItem,
+                        @NonNull ServiceRequest newItem) {
+
+                    return java.util.Objects.equals(
+                            oldItem.getId(),
+                            newItem.getId()
+                    );
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull ServiceRequest oldItem,
-                                                  @NonNull ServiceRequest newItem) {
+                public boolean areContentsTheSame(
+                        @NonNull ServiceRequest oldItem,
+                        @NonNull ServiceRequest newItem) {
 
-                    // Comparing important fields only
-                    return oldItem.getStatus().equals(newItem.getStatus()) &&
+                    return java.util.Objects.equals(oldItem.getId(), newItem.getId()) &&
+                            java.util.Objects.equals(oldItem.getStatus(), newItem.getStatus()) &&
+                            java.util.Objects.equals(oldItem.getType(), newItem.getType()) &&
+                            java.util.Objects.equals(oldItem.getProblemDescription(), newItem.getProblemDescription()) &&
                             oldItem.getTotalDistance() == newItem.getTotalDistance() &&
-                            oldItem.getTotalDuration() == newItem.getTotalDuration() &&
-                            oldItem.getServiceId().equals(newItem.getServiceId()) &&
-                            oldItem.getCustomerId().equals(newItem.getCustomerId());
+                            oldItem.getTotalDuration() == newItem.getTotalDuration();
                 }
             };
+
+//    private static final DiffUtil.ItemCallback<ServiceRequest> DIFF_CALLBACK =
+//            new DiffUtil.ItemCallback<ServiceRequest>() {
+//
+//                @Override
+//                public boolean areItemsTheSame(@NonNull ServiceRequest oldItem,
+//                                               @NonNull ServiceRequest newItem) {
+//                    return oldItem.getId().equals(newItem.getId());
+//                }
+//
+//                @Override
+//                public boolean areContentsTheSame(@NonNull ServiceRequest oldItem,
+//                                                  @NonNull ServiceRequest newItem) {
+//
+//                    // Comparing important fields only
+//                    return oldItem.getStatus().equals(newItem.getStatus()) &&
+//                            oldItem.getTotalDistance() == newItem.getTotalDistance() &&
+//                            oldItem.getTotalDuration() == newItem.getTotalDuration() &&
+//                            oldItem.getServiceId().equals(newItem.getServiceId()) &&
+//                            oldItem.getCustomerId().equals(newItem.getCustomerId());
+//                }
+//            };
 }

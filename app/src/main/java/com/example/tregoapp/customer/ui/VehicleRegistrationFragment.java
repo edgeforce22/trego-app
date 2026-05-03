@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tregoapp.R;
@@ -35,6 +36,7 @@ public class VehicleRegistrationFragment extends Fragment {
     private TextInputEditText etVehicleBrand;
     private TextInputEditText etVehicleModel;
     private TextInputLayout registrationNoLayout;
+    private TextView tvRegTitle;
     private TextInputEditText etRegistrationNumber;
     private MaterialButton registerVehicleBtn;
     private boolean registrationNumberReq;
@@ -72,8 +74,9 @@ public class VehicleRegistrationFragment extends Fragment {
         etVehicleBrand = view.findViewById(R.id.etVehicleBrand);
         etVehicleModel = view.findViewById(R.id.etVehicleModel);
         registrationNoLayout = view.findViewById(R.id.registrationNoLayout);
+        tvRegTitle = view.findViewById(R.id.tvRegTitle);
         etRegistrationNumber = view.findViewById(R.id.etRegistrationNo);
-        etRegistrationNumber.setHint("TN00AA0000");
+//        etRegistrationNumber.setHint("TN00AA0000");
         registerVehicleBtn = view.findViewById(R.id.registerVehicleBtn);
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
@@ -90,10 +93,12 @@ public class VehicleRegistrationFragment extends Fragment {
             String selectedVehicle = parent.getItemAtPosition(position).toString().trim().toLowerCase();
 
             if (!selectedVehicle.equalsIgnoreCase("bicycle")) {
+                tvRegTitle.setVisibility(View.VISIBLE);
                 registrationNoLayout.setVisibility(View.VISIBLE);
                 registrationNumberReq = true;
             }
             else {
+                tvRegTitle.setVisibility(View.GONE);
                 registrationNoLayout.setVisibility(View.GONE);
                 registrationNumberReq = false;
             }
@@ -117,20 +122,20 @@ public class VehicleRegistrationFragment extends Fragment {
 
     private boolean validateVehicleData(String vehicleType, String vehicleBrand, String vehicleModel, String registrationNumber) {
         if (vehicleType.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please select the vehicle type", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please select the vehicle type", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (vehicleBrand.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the vehicle brand", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the vehicle brand", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (vehicleModel.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the vehicle model", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the vehicle model", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (registrationNumberReq) {
             if (registrationNumber.isEmpty()) {
-                // Toast.makeText(requireContext(), "Please enter the registration number", Toast.LENGTH_SHORT).show();
+                 Toast.makeText(requireContext(), "Please enter the registration number", Toast.LENGTH_SHORT).show();
                 return false;
             }
             // Regex for TN00AA0000 format: 2 letters, 2 digits, 2 letters, 4 digits
@@ -146,7 +151,7 @@ public class VehicleRegistrationFragment extends Fragment {
     private void viewModelObserver() {
         viewModel.getVehicleRegistrationResource().observe(getViewLifecycleOwner(), resource -> {
             LoaderManager.handleResource(this, resource, vehicle -> {
-                // Toast.makeText(requireContext(), "Vehicle Registered successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), "Vehicle Registered successfully", Toast.LENGTH_SHORT).show();
                 NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
             });
         });

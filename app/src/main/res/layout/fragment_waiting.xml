@@ -53,6 +53,18 @@
             android:textSize="13dp"
             android:textColor="@color/text_grey"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelRequest"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:text="Cancel Request"
+            android:textColor="#D32F2F"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:rippleColor="#1AE02424" />
+
     </LinearLayout>
 
 </LinearLayout>

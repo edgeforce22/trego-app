@@ -89,19 +89,19 @@ public class CreateServiceFragment extends Fragment {
         if (service.isEmpty() &&
                 serviceDescription.isEmpty() &&
                 servicePrice.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter all the required field", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter all the required field", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (service.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the service", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the service", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (serviceDescription.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the service description", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the service description", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (servicePrice.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the service price", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the service price", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
@@ -112,7 +112,7 @@ public class CreateServiceFragment extends Fragment {
             if (authState == null) {
                 return;
             }
-            // Toast.makeText(getContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
+             Toast.makeText(getContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
 
             LoaderManager.hide(this);
             if (authState.getSuccess()) {

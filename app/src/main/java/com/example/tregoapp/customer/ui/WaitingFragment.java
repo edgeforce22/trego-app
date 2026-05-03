@@ -19,6 +19,7 @@ import com.example.tregoapp.R;
 import com.example.tregoapp.customer.navigation.NavigationHelper;
 import com.example.tregoapp.customer.network.Resource;
 import com.example.tregoapp.customer.viewmodel.ViewModel;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.jspecify.annotations.NonNull;
@@ -34,6 +35,7 @@ public class WaitingFragment extends Fragment {
     private TextView tvTimer;
     private TextView tvStatus;
     private TextView tvServiceId;
+    private MaterialButton btnCancelRequest;
 
     private ViewModel viewModel;
 
@@ -82,7 +84,7 @@ public class WaitingFragment extends Fragment {
         tvTimer = view.findViewById(R.id.tvTimer);
         tvStatus = view.findViewById(R.id.tvStatus);
 //        tvServiceId = view.findViewById(R.id.tvServiceId);
-
+        btnCancelRequest = view.findViewById(R.id.btnCancelRequest);
         tvStatus.setText("Request sent successfully");
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
@@ -90,6 +92,11 @@ public class WaitingFragment extends Fragment {
 
         startPolling();
         startTimer();
+
+        btnCancelRequest.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Request was cancelled", Toast.LENGTH_SHORT).show();
+            cancelRequest();
+        });
     }
 
     @Override
@@ -118,11 +125,16 @@ public class WaitingFragment extends Fragment {
                     NavigationHelper.navigateTo(getParentFragmentManager(), AcceptanceFragment.newInstance(request_id), false);
                 } else if ("cancelled".equalsIgnoreCase(service.getStatus())) {
                     stopPolling();
-                    // Toast.makeText(requireContext(), "Request cancelled by Mechanic", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Request was cancelled by Mechanic", Toast.LENGTH_SHORT).show();
+                    NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
+                }
+                else if (service.getIsCompletelyRejected()) {
+                    stopPolling();
+                    Toast.makeText(requireContext(), "Request was rejected by all the mechanics", Toast.LENGTH_SHORT).show();
                     NavigationHelper.clearBackStackAndNavigate(getParentFragmentManager(), new DashboardFragment());
                 }
             } else if (resource.getStatus() == Resource.Status.ERROR) {
-                // Toast.makeText(requireContext(), resource.getMessage(), Toast.LENGTH_SHORT).show();
+                 Toast.makeText(requireContext(), resource.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -135,7 +147,7 @@ public class WaitingFragment extends Fragment {
                 if (request_id != null) {
                     viewModel.getServiceRequest(request_id);
                 }
-                handler.postDelayed(this, 10000);
+                handler.postDelayed(this, 5000);
             }
         };
         handler.postDelayed(runnable, 1000);

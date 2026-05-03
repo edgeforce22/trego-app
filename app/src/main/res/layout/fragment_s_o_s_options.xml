@@ -105,6 +105,57 @@
 <!--                    android:textColor="@color/primary_color"-->
 <!--                    android:layout_marginTop="20dp" />-->
 
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilOtherIssue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="12dp"
+
+                    app:hintEnabled="false"
+                    app:endIconMode="clear_text"
+
+                    app:boxBackgroundMode="outline"
+                    app:boxBackgroundColor="@color/white"
+
+                    app:boxStrokeColor="#E6D98A"
+                    app:boxStrokeWidth="1dp"
+                    app:boxStrokeWidthFocused="1.5dp"
+
+                    app:boxCornerRadiusTopStart="18dp"
+                    app:boxCornerRadiusTopEnd="18dp"
+                    app:boxCornerRadiusBottomStart="18dp"
+                    app:boxCornerRadiusBottomEnd="18dp"
+
+                    app:endIconTint="#A67C00">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etOtherIssue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:hint="Describe the issue..."
+                        android:textColor="#1F1F1F"
+                        android:textColorHint="#A89B5C"
+                        android:textSize="14sp"
+                        android:textStyle="normal"
+
+                        android:minHeight="130dp"
+                        android:maxLines="6"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine|textCapSentences"
+
+                        android:paddingStart="18dp"
+                        android:paddingEnd="18dp"
+                        android:paddingTop="18dp"
+                        android:paddingBottom="18dp"
+
+                        android:background="@null"
+                        android:scrollbars="vertical"
+                        android:overScrollMode="ifContentScrolls"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
             </LinearLayout>
 
         </ScrollView>

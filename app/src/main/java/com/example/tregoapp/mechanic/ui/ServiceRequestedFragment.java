@@ -101,16 +101,16 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
         viewModel.loadSavedUser();
         viewModelObserver();
 
+        DeviceLocationHelper helper = new DeviceLocationHelper(requireContext());
+        helper.getCurrentLocation(requireContext(), (lat, lon, addr) -> {
+            this.latitude = lat;
+            this.longitude = lon;
+            this.address = addr;
+        });
+
         // Socket Setup
         socketSetup();
     }
-
-
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        stopPolling();
-//    }
 
     @Override
     public void onClick(String serviceRequestId) {
@@ -119,7 +119,7 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
 
     @Override
     public void onClick2(String serviceRequestId) {
-        viewModel.cancelServiceRequest(serviceRequestId);
+        viewModel.cancelServiceRequest(serviceRequestId, userId);
         viewModel.removeRequest(serviceRequestId);
     }
 
@@ -151,21 +151,6 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
         });
     }
 
-//    private void removeItemFromList(String id) {
-//
-//        if (adapter.getCurrentList() == null) return;
-//
-//        ArrayList<ServiceRequest> updatedList = new ArrayList<>();
-//
-//        for (ServiceRequest item : adapter.getCurrentList()) {
-//            if (!item.getId().equals(id)) {
-//                updatedList.add(item);
-//            }
-//        }
-//
-//        adapter.submitList(updatedList);
-//    }
-
     private void viewModelObserver() {
         viewModel.getAuthState().observe(getViewLifecycleOwner(), state -> {
             if (state == null) {
@@ -184,11 +169,9 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
             isActive = "active".equalsIgnoreCase(currentUser.getStatus());
 
             if (isActive) {
-//                startPolling();
                 viewModel.getShopServiceRequests(userId, shopId);
             } else {
                 LoaderManager.hide(this);
-//                stopPolling();
                 adapter.submitList(null);
             }
         });
@@ -221,32 +204,6 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
         });
     }
 
-//    private void startPolling() {
-//        if (handler != null) return;
-//        handler = new Handler(Looper.getMainLooper());
-//
-//        runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                if (shopId != null) {
-//                    viewModel.getShopServiceRequests(shopId);
-//                }
-//                handler.postDelayed(this, 5000);
-//            }
-//        };
-//        handler.post(runnable);
-//    }
-//
-//    private void stopPolling() {
-//        if (handler != null && runnable != null) {
-//            handler.removeCallbacks(runnable);
-//            handler = null;
-//        }
-//    }
-
-
-    // Socket
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -259,6 +216,8 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
             socket.off(Socket.EVENT_CONNECT);
         }
     }
+
+    // Socket
 
     private void socketSetup() {
         SocketManager.init(BASE_URL_ENDPOINT);
@@ -292,6 +251,25 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
 
                         if ("SOS".equalsIgnoreCase(request.getType())) {
                             Log.d("SOS", "🚨 SOS RECEIVED");
+
+                            if (request.getTotalDistance() <= 0 &&
+                                    request.getCustomerLocation() != null) {
+
+                                double customerLat =
+                                        request.getCustomerLocation().getLatitude();
+
+                                double customerLng =
+                                        request.getCustomerLocation().getLongitude();
+
+                                double distance = calculateDistanceKm(
+                                        latitude,
+                                        longitude,
+                                        customerLat,
+                                        customerLng
+                                );
+
+                                request.setTotalDistance(distance);
+                            }
                         }
 
                         viewModel.addRequest(request);
@@ -309,5 +287,26 @@ public class ServiceRequestedFragment extends Fragment implements OnItemClickLis
                 });
             });
         }
+    }
+
+    // ================= ADD THIS METHOD INSIDE ServiceRequestedFragment =================
+
+    private double calculateDistanceKm(
+            double startLat,
+            double startLng,
+            double endLat,
+            double endLng
+    ) {
+        float[] results = new float[1];
+
+        android.location.Location.distanceBetween(
+                startLat,
+                startLng,
+                endLat,
+                endLng,
+                results
+        );
+
+        return results[0] / 1000.0;
     }
 }

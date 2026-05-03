@@ -1,256 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp">
-
-        <TextView
-            android:id="@+id/tvDashboardName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Hello, User"
-            android:textSize="17dp"
-            android:textColor="@color/black"/>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/profileBtn"
-            android:layout_width="46dp"
-            android:layout_height="46dp"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            app:cardCornerRadius="28dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="@color/primary_color"
-            android:backgroundTint="@color/white">
-
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/profile_active" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
+    android:id="@+id/cardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginVertical="6dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="2dp"
+    app:strokeColor="#EFE4A5"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp" >
+        android:padding="14dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your Location"
-            android:textSize="17dp"
-            android:textColor="@color/text_grey"/>
-
+        <!-- Top Row -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="13dp"
-            android:orientation="vertical" >
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <!-- Icon -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="350dp"
-                android:layout_height="250dp"
-                app:strokeWidth="0dp">
+                android:layout_width="46dp"
+                android:layout_height="46dp"
+                app:cardBackgroundColor="#FFF8C6"
+                app:cardCornerRadius="23dp"
+                app:cardElevation="0dp">
 
-                <org.osmdroid.views.MapView
-                    android:id="@+id/map"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/vehicleIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/bike"
+                    app:tint="#8A6B00" />
 
             </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardLiveAddress"
-                android:layout_width="wrap_content"
+            <!-- Brand + Model -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="1dp"
-                app:strokeColor="@color/primary_color"
-                android:backgroundTint="@color/white">
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tvLiveAddress"
+                    android:id="@+id/tvVehicleName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="12dp"
-                    android:text="Detecting your location..."
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:textColor="#8F8331"
-                    android:maxLines="1"
-                    android:ellipsize="end"/>
+                    android:text="Hero"
+                    android:textColor="#1F1F1F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-            </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/vehicleModel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Splender"
+                    android:textColor="#7A7A7A"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Type Badge -->
+            <TextView
+                android:id="@+id/vehicleType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BIKE"
+                android:textColor="#9C7B00"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:background="#FFF7B8"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
         </LinearLayout>
 
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp" >
-        
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Services"
-            android:textSize="17dp"
-            android:textColor="@color/text_grey" />
-        
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
+            android:background="#F3F3F3" />
+
+        <!-- Bottom Row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:weightSum="2"
-            android:padding="10dp">
-            
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/goToNearbyShops"
-                android:layout_width="0dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:strokeWidth="0dp"
-                app:cardElevation="3dp">
+                android:text="Registration No"
+                android:textColor="#9A9A9A"
+                android:textSize="11sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="@drawable/card_1_linear_color"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Reqeusts"
-                        android:textStyle="bold"
-                        android:textSize="18dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="7dp"
-                        android:text="Get service by nearby shops"
-                        android:textSize="10dp" />
-
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|end"
-                        android:paddingTop="13dp"
-                        android:src="@drawable/service" />
-
-                </LinearLayout>
-                
-            </com.google.android.material.card.MaterialCardView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/goToSOS"
+            <View
                 android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvVehicleInfo"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:strokeWidth="0dp"
-                app:cardElevation="3dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:background="@drawable/card_2_linear_color"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SOS"
-                        android:textStyle="bold"
-                        android:textSize="18dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="7dp"
-                        android:text="Get instant service for emergency"
-                        android:textSize="10dp" />
-
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|end"
-                        android:paddingTop="13dp"
-                        android:src="@drawable/sos" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
+                android:text="KL07AB1234"
+                android:textColor="#1F1F1F"
+                android:textSize="13sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
-        
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nearby Shops"
-            android:textSize="17dp"
-            android:textColor="@color/text_grey" />
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/shopsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            android:clipToPadding="false" />
 
     </LinearLayout>
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

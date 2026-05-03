@@ -46,7 +46,7 @@
                 android:layout_height="100dp"
                 android:layout_gravity="center"
                 app:cardCornerRadius="50dp"
-                android:backgroundTint="@color/primary_color"
+                android:backgroundTint="#D32F2F"
                 app:cardElevation="6dp"
                 app:strokeWidth="0dp" >
 

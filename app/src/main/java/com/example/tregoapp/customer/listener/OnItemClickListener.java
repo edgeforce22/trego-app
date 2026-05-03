@@ -6,4 +6,6 @@ import com.example.tregoapp.mechanic.model.RequestCustomerModel;
 public interface OnItemClickListener {
 
     void onClick(ShopDetail shopDetail);
+
+    void onClickShop(ShopDetail shopDetail);
 }

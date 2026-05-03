@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/cardView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="85dp"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="#FFFDF2"
+    app:cardCornerRadius="17dp"
+    app:cardElevation="0dp"
+    app:strokeColor="#FFE429"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:paddingStart="6dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <!-- Icon Circle -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            app:cardBackgroundColor="#FFF6B0"
+            app:cardCornerRadius="26dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/vehicleIcon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:tint="#6B5200"
+                app:srcCompat="@drawable/bike" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Text Content -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <!-- Vehicle Type -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/vehicleType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bike"
+                android:textColor="#A67C00"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+
+            <!-- Brand -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/vehicleBrand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Hero"
+                android:textColor="#1F1F1F"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!-- Model -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/vehicleModel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Splendor"
+                android:textColor="#5F5F5F"
+                android:textSize="11sp" />
+
+            <!-- Registration Number -->
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/vehicleRegistration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="KL07AB1234"
+                android:textColor="#757575"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

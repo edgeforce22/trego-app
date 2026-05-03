@@ -46,11 +46,23 @@ public class ServiceRequest {
     @SerializedName("paymentStatus")
     private String paymentStatus;
 
+    @SerializedName("isActive")
+    private boolean isActive;
+
+    @SerializedName("isSOS")
+    private boolean isSOS;
+
     @SerializedName("type")
     private String type;
 
     @SerializedName("createdAt")
     private String createdAt;
+
+    @SerializedName("shopName")
+    private String shopName;
+
+    @SerializedName("serviceName")
+    private String serviceName;
 
     @SerializedName("customerName")
     private String customerName;
@@ -196,5 +208,21 @@ public class ServiceRequest {
 
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public boolean getIsSOS() {
+        return isSOS;
     }
 }

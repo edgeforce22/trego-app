@@ -10,9 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.tregoapp.R;
+import com.example.tregoapp.customer.model.GetRequestById;
 import com.example.tregoapp.customer.navigation.NavigationHelper;
 import com.example.tregoapp.customer.network.Resource;
 import com.example.tregoapp.customer.utils.DeviceLocationHelper;
@@ -21,6 +23,8 @@ import com.example.tregoapp.customer.viewmodel.ViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +39,20 @@ public class SOSOptionsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private ImageView backBtn;
+    private ChipGroup chipGroup;
+
+    private TextInputLayout tilOtherIssue;
+    private TextInputEditText etOtherIssue;
+    private Chip otherChip;
+
     private ViewModel viewModel;
 
     private double latitude;
     private double longitude;
+    private String address;
+
+    private final int[] selectedCount = {0};
 
     public SOSOptionsFragment() {
         // Required empty public constructor
@@ -71,13 +85,15 @@ public class SOSOptionsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
-        ChipGroup chipGroup = view.findViewById(R.id.chipGroupSOS);
+        backBtn = view.findViewById(R.id.backBtn);
+        chipGroup = view.findViewById(R.id.chipGroupSOS);
+        tilOtherIssue = view.findViewById(R.id.tilOtherIssue);
+        etOtherIssue = view.findViewById(R.id.etOtherIssue);
         MaterialButton btnRequest = view.findViewById(R.id.btnRequestSOS);
 
         String[] sosOptions = {
                 "Breakdown", "Flat Tyre", "Battery Jumpstart",
-                "Fuel Delivery", "Engine Issue", "Towing", "Accident Help"
+                "Fuel Delivery", "Engine Issue", "Towing", "Accident Help", "Other"
         };
 
         for (String option : sosOptions) {
@@ -95,21 +111,63 @@ public class SOSOptionsFragment extends Fragment {
             chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
 
             chipGroup.addView(chip);
+
+            if ("Other".equalsIgnoreCase(option)) {
+                otherChip = chip;
+            }
+        }
+
+        if (otherChip != null) {
+            otherChip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                tilOtherIssue.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+
+                if (!isChecked) {
+                    etOtherIssue.setText("");
+                }
+            });
         }
 
         // Limit selection
-        chipGroup.setOnCheckedStateChangeListener((group, checkedIds) -> {
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
 
-            if (checkedIds.size() > 3) {
-                // Toast.makeText(requireContext(), \"Select maximum 3 issues\", Toast.LENGTH_SHORT).show();
+            Chip chip = (Chip) chipGroup.getChildAt(i);
 
-                int lastCheckedId = checkedIds.get(checkedIds.size() - 1);
-                Chip chip = group.findViewById(lastCheckedId);
+            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                if (chip != null) chip.setChecked(false);
-            }
-        });
+                if (isChecked) {
 
+                    if (selectedCount[0] >= 3) {
+                        chip.setChecked(false);
+
+                        Toast.makeText(
+                                requireContext(),
+                                "Select maximum 3 issues",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        return;
+                    }
+
+                    selectedCount[0]++;
+                } else {
+                    if (selectedCount[0] > 0) {
+                        selectedCount[0]--;
+                    }
+                }
+
+                // Handle Other chip visibility
+                if ("Other".equalsIgnoreCase(chip.getText().toString())) {
+
+                    tilOtherIssue.setVisibility(
+                            isChecked ? View.VISIBLE : View.GONE
+                    );
+
+                    if (!isChecked) {
+                        etOtherIssue.setText("");
+                    }
+                }
+            });
+        }
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
         viewModel.loadSavedUser();
@@ -119,38 +177,94 @@ public class SOSOptionsFragment extends Fragment {
         DeviceLocationHelper helper =
                 new DeviceLocationHelper(requireContext());
 
-        helper.getCurrentLocation(requireContext(), (lat, lon, address) -> {
+        helper.getCurrentLocation(requireContext(), (lat, lon, add) -> {
             latitude = lat;
             longitude = lon;
+            address = add;
+        });
+
+        backBtn.setOnClickListener(v -> {
+            if (getParentFragmentManager().getBackStackEntryCount() > 0) {
+                getParentFragmentManager().popBackStack();
+            }
         });
 
         // Button click
+
         btnRequest.setOnClickListener(v -> {
 
             List<String> selectedServices = new ArrayList<>();
 
             for (int i = 0; i < chipGroup.getChildCount(); i++) {
+
                 Chip chip = (Chip) chipGroup.getChildAt(i);
 
                 if (chip.isChecked()) {
-                    selectedServices.add(chip.getText().toString());
+
+                    if ("Other".equalsIgnoreCase(chip.getText().toString())) {
+
+                        String otherText = etOtherIssue.getText() != null
+                                ? etOtherIssue.getText().toString().trim()
+                                : "";
+
+                        if (otherText.isEmpty()) {
+                            Toast.makeText(requireContext(),
+                                    "Please enter other issue",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        selectedServices.add(otherText);
+
+                    } else {
+                        selectedServices.add(chip.getText().toString());
+                    }
                 }
             }
 
             if (selectedServices.isEmpty()) {
-                // Toast.makeText(requireContext(), \"Please select at least one issue\", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(),
+                        "Please select at least one issue",
+                        Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            viewModel.sendSOS(customerId, latitude, longitude, selectedServices);
-            Log.d("SOS_SELECTED", selectedServices.toString());
+            viewModel.sendSOS(
+                    customerId,
+                    latitude,
+                    longitude,
+                    address,
+                    selectedServices
+            );
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        clearSelections();
     }
 
     private void viewModelObserver() {
         viewModel.getSosActionResource().observe(getViewLifecycleOwner(), resource -> {
             LoaderManager.handleResource(this, resource, data -> {
-                NavigationHelper.navigateTo(getParentFragmentManager(), SOSSendingFragment.newInstance(customerId));
+
+                if (data == null) {
+                    Toast.makeText(requireContext(),"Invalid SOS response",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String requestId = data.getId();
+
+                if (requestId == null || requestId.isEmpty()) {
+                    Toast.makeText(requireContext(),"Request ID missing",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                NavigationHelper.navigateTo(
+                        getParentFragmentManager(),
+                        SOSSendingFragment.newInstance(customerId, requestId)
+                );
             });
         });
 
@@ -159,5 +273,23 @@ public class SOSOptionsFragment extends Fragment {
                 customerId = resource.getData().getId();
             }
         });
+    }
+
+// ===================== OPTIONAL clearSelections() UPDATE =====================
+
+    private void clearSelections() {
+
+        if (chipGroup == null) return;
+
+        chipGroup.clearCheck();
+        selectedCount[0] = 0;
+
+        if (tilOtherIssue != null) {
+            tilOtherIssue.setVisibility(View.GONE);
+        }
+
+        if (etOtherIssue != null) {
+            etOtherIssue.setText("");
+        }
     }
 }

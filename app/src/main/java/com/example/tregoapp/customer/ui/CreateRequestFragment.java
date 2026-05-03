@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tregoapp.R;
+import com.example.tregoapp.customer.adapter.ServiceListAdapter;
+import com.example.tregoapp.customer.adapter.VehicleListAdapter;
+import com.example.tregoapp.customer.listener.OnItemClickListener3;
 import com.example.tregoapp.customer.model.ServiceDetail;
 import com.example.tregoapp.customer.model.ShopDetail;
 import com.example.tregoapp.customer.model.VehicleDetail;
@@ -53,8 +58,8 @@ public class CreateRequestFragment extends Fragment {
     private double totalDuration;
 
     private ImageView backBtn;
-    private AutoCompleteTextView etVehicleType;
-    private AutoCompleteTextView etServiceType;
+    private RecyclerView rvVehicleList;
+    private RecyclerView rvServiceList;
     private TextInputEditText etProblemDescription;
     private TextView tvTotalDistance;
     private TextView tvTotalPriceView;
@@ -64,8 +69,24 @@ public class CreateRequestFragment extends Fragment {
     private List<VehicleDetail> vehicleObjects;
     private List<ServiceDetail> serviceObjects;
 
+    private VehicleListAdapter vehicleListAdapter;
+    private ServiceListAdapter serviceListAdapter;
+
+    private OnItemClickListener3 listener = new OnItemClickListener3() {
+        @Override
+        public void onClickVehicle(VehicleDetail vehicleDetail) {
+            vehicle_id = vehicleDetail.getVehicleId();
+        }
+
+        @Override
+        public void onClickService(ServiceDetail serviceDetail) {
+            service_id = serviceDetail.getServiceId();
+            totalPrice = serviceDetail.getPrice();
+            tvTotalPriceView.setText(String.format(Locale.getDefault(), "₹ %.2f", totalPrice));
+        }
+    };
+
     public CreateRequestFragment() {
-        // Required empty public constructor
     }
     public static CreateRequestFragment newInstance(ShopDetail shop) {
         CreateRequestFragment fragment = new CreateRequestFragment();
@@ -96,8 +117,8 @@ public class CreateRequestFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull  View view, @Nullable Bundle savedInstanceState) {
         backBtn = view.findViewById(R.id.backBtn);
-        etVehicleType = view.findViewById(R.id.vehicleTypeDropDown);
-        etServiceType = view.findViewById(R.id.etServiceType);
+        rvVehicleList = view.findViewById(R.id.rvVehicleList);
+        rvServiceList = view.findViewById(R.id.rvServiceList);
         etProblemDescription = view.findViewById(R.id.etProblemDescription);
         tvTotalDistance = view.findViewById(R.id.tvTotalDistance);
         tvTotalPriceView = view.findViewById(R.id.tvTotalPrice);
@@ -113,22 +134,26 @@ public class CreateRequestFragment extends Fragment {
         viewModel.getShopServices(shop_id);
         viewModelObserver();
 
+        rvVehicleList.setLayoutManager(
+                new LinearLayoutManager(
+                        requireContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                )
+        );
+
+        rvServiceList.setLayoutManager(
+                new LinearLayoutManager(
+                        requireContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                )
+        );
+
         backBtn.setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
                 getParentFragmentManager().popBackStack();
             }
-        });
-
-        etVehicleType.setOnItemClickListener((parent, itemView, position, id) -> {
-            VehicleDetail selectedVehicle = vehicleObjects.get(position);
-            vehicle_id = selectedVehicle.getVehicleId();
-        });
-
-        etServiceType.setOnItemClickListener((parent, itemView, position, id) -> {
-            ServiceDetail selectedService = serviceObjects.get(position);
-            service_id = selectedService.getServiceId();
-            totalPrice = selectedService.getPrice();
-            tvTotalPriceView.setText(String.format(Locale.getDefault(), "₹ %.2f", totalPrice));
         });
 
         requestBtn.setOnClickListener(v -> {
@@ -170,19 +195,19 @@ public class CreateRequestFragment extends Fragment {
             service_id.isEmpty() &&
             problemDescription.isEmpty() &&
             address.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please fill up all the fields", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please fill up all the fields", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (vehicle_id.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please choose the vehicle", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please choose the vehicle", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (service_id.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please choose the service", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please choose the service", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (problemDescription.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the problem", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the problem", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (address.isEmpty()) {
@@ -197,45 +222,19 @@ public class CreateRequestFragment extends Fragment {
         viewModel.getVehicleListResource().observe(getViewLifecycleOwner(), resource -> {
             LoaderManager.handleResource(this, resource, vehicles -> {
                 if (vehicles == null) return;
-                vehicleObjects = vehicles;
-                List<String> vehicleNames = new ArrayList<>();
 
-                for (VehicleDetail v : vehicles) {
-                    String name = v.getVehicleType() + "  (" +
-                            v.getVehicleBrand() + " | " +
-                            v.getVehicleModel() + ")";
-                    vehicleNames.add(name);
-                }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        vehicleNames
-                );
-
-                etVehicleType.setAdapter(adapter);
+                vehicleListAdapter = new VehicleListAdapter(vehicles, listener);
+                vehicleListAdapter.setItemClickable(true);
+                rvVehicleList.setAdapter(vehicleListAdapter);
             });
         });
 
         viewModel.getServicesListResource().observe(getViewLifecycleOwner(), resource -> {
             LoaderManager.handleResource(this, resource, services -> {
                 if (services == null) return;
-                serviceObjects = services;
-                List<String> serviceName = new ArrayList<>();
 
-                for (ServiceDetail v : services) {
-                    String name = v.getService() + "  (" +
-                            v.getPrice() + ")";
-                    serviceName.add(name);
-                }
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                        requireContext(),
-                        android.R.layout.simple_dropdown_item_1line,
-                        serviceName
-                );
-
-                etServiceType.setAdapter(adapter);
+                serviceListAdapter = new ServiceListAdapter(services, listener);
+                rvServiceList.setAdapter(serviceListAdapter);
             });
         });
 

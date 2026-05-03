@@ -1,5 +1,6 @@
 package com.example.tregoapp.mechanic.ui.worker;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -106,7 +107,14 @@ public class WorkerProfileFragment extends Fragment {
                 String cleanPhone = phone.replace("91+", "").trim();
                 tvPhoneNumber.setText("91+ " + cleanPhone);
             }
-            tvShopStatus.setText(currentUser.getStatus());
+            if ("active".equalsIgnoreCase(currentUser.getStatus())) {
+                tvShopStatus.setText("Active");
+                tvShopStatus.setTextColor(Color.parseColor("#16A34A"));
+            }
+            else {
+                tvShopStatus.setText("Inactive");
+                tvShopStatus.setTextColor(Color.parseColor("#D32F2F"));
+            }
             tvAddress.setText(currentUser.getAddress());
 
             if (currentUser.getShopId() != null && !currentUser.getShopId().isEmpty()) {

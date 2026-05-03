@@ -1,5 +1,6 @@
 package com.example.tregoapp.mechanic.api;
 
+import com.example.tregoapp.mechanic.model.CancelRequestById;
 import com.example.tregoapp.mechanic.model.GetRequestByTwoId;
 import com.example.tregoapp.mechanic.model.map.RouteResponse;
 import com.example.tregoapp.mechanic.model.AcceptServiceRequest;
@@ -80,7 +81,7 @@ public interface ApiService {
 
     @POST("mechanic/auth/cancelServiceRequest")
     Call<ApiResponse<ServiceRequest>> cancelServiceRequest(
-            @Body GetRequestById request
+            @Body CancelRequestById request
     );
 
     @POST("mechanic/auth/startServiceRequest")
