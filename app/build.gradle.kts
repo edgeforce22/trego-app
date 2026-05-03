@@ -25,10 +25,10 @@ android {
 
     buildTypes {
         debug {
-//            buildConfigField("String", "BASE_URL", "\"https://trego-server.onrender.com/api/\"")
-//            buildConfigField("String", "BASE_URL_ENDPOINT", "\"https://trego-server.onrender.com\"")
-            buildConfigField("String", "BASE_URL", "\"http://192.168.1.167:5000/api/\"")
-            buildConfigField("String", "BASE_URL_ENDPOINT", "\"http://192.168.1.167:5000\"")
+            buildConfigField("String", "BASE_URL", "\"https://trego-server.onrender.com/api/\"")
+            buildConfigField("String", "BASE_URL_ENDPOINT", "\"https://trego-server.onrender.com\"")
+//            buildConfigField("String", "BASE_URL", "\"http://192.168.1.167:5000/api/\"")
+//            buildConfigField("String", "BASE_URL_ENDPOINT", "\"http://192.168.1.167:5000\"")
             buildConfigField("String", "ROUTER_OSRM_URL", "\"https://router.project-osrm.org/\"")
         }
         release {
