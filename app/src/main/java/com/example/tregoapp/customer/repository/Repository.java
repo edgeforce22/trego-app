@@ -1,12 +1,14 @@
 package com.example.tregoapp.customer.repository;
 
 import android.content.Context;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tregoapp.customer.model.GetRequestById;
 import com.example.tregoapp.customer.model.Location;
+import com.example.tregoapp.customer.model.RateShopRequest;
 import com.example.tregoapp.customer.model.SOSRequest;
 import com.example.tregoapp.customer.model.ServiceDetail;
 import com.example.tregoapp.customer.model.ShopDetail;
@@ -29,15 +31,22 @@ import com.example.tregoapp.customer.network.Resource;
 import com.example.tregoapp.customer.model.FCMTokenRequest;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Repository {
 
+    private Context context;
     private final SessionManager sessionManager;
     private final ApiService api;
     private final ApiService api2;
@@ -47,6 +56,7 @@ public class Repository {
         this.sessionManager = new SessionManager(context);
         this.api = RetrofitClient.getInstance().create(ApiService.class);
         this.api2 = RetrofitClient.getOSRMInstance().create(ApiService.class);
+        this.context = context;
     }
 
     // ================= COMMON ERROR PARSER =================
@@ -316,42 +326,365 @@ public class Repository {
 
 
 
-    // ================= CREATE SERVICE REQUEST =================
-    public void createServiceRequest(ServiceRequest request,
-                                     MutableLiveData<Resource<ServiceRequest>> serviceRequestLiveData) {
+// ================= CREATE SERVICE REQUEST =================
 
-        serviceRequestLiveData.postValue(Resource.loading(null));
+    public void createServiceRequest(
 
-        api.createRequest(request).enqueue(new Callback<ApiResponse<ServiceRequest>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<ServiceRequest>> call, Response<ApiResponse<ServiceRequest>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+            List<Uri> imageUris,
 
-                    ApiResponse<ServiceRequest> body = response.body();
+            ServiceRequest request,
 
-                    if (body.getSuccess()) {
+            MutableLiveData<Resource<ServiceRequest>>
+                    serviceRequestLiveData
+    ) {
 
-                        Log.d("API_SUCCESS", body.getMessage());
+        serviceRequestLiveData.postValue(
+                Resource.loading(null)
+        );
 
-                        serviceRequestLiveData.postValue(Resource.success(body.getData()));
-                    } else {
-                        serviceRequestLiveData.postValue(Resource.error(body.getMessage(), null));
-                    }
+        try {
 
-                } else {
-                    String errorMsg = parseError(response);
-                    serviceRequestLiveData.postValue(Resource.error(errorMsg, null));
+            /*
+             * MULTIPLE IMAGE PARTS
+             */
+            List<MultipartBody.Part> imageParts =
+                    new ArrayList<>();
+
+            if (imageUris != null) {
+
+                for (Uri uri : imageUris) {
+
+                    /*
+                     * REQUEST BODY FROM URI
+                     * FASTEST APPROACH
+                     */
+                    RequestBody requestFile =
+                            new RequestBody() {
+
+                                @Override
+                                public MediaType contentType() {
+
+                                    return MediaType.parse(
+
+                                            context
+                                                    .getContentResolver()
+                                                    .getType(uri)
+                                    );
+                                }
+
+                                @Override
+                                public void writeTo(
+                                        okio.BufferedSink sink
+                                ) {
+
+                                    try {
+
+                                        InputStream inputStream =
+
+                                                context
+                                                        .getContentResolver()
+                                                        .openInputStream(uri);
+
+                                        byte[] buffer =
+                                                new byte[8192];
+
+                                        int read;
+
+                                        while (
+                                                (read =
+                                                        inputStream.read(buffer))
+                                                        != -1
+                                        ) {
+
+                                            sink.write(
+                                                    buffer,
+                                                    0,
+                                                    read
+                                            );
+                                        }
+
+                                        inputStream.close();
+
+                                    } catch (Exception e) {
+
+                                        e.printStackTrace();
+                                    }
+                                }
+                            };
+
+                    /*
+                     * IMAGE PART
+                     */
+                    MultipartBody.Part imagePart =
+                            MultipartBody.Part.createFormData(
+
+                                    "requestImages",
+
+                                    "image_"
+                                            + System.currentTimeMillis()
+                                            + ".jpg",
+
+                                    requestFile
+                            );
+
+                    imageParts.add(imagePart);
                 }
             }
 
-            @Override
-            public void onFailure(Call<ApiResponse<ServiceRequest>> call, Throwable t) {
-                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
-                Log.d("API_FAILURE", msg);
-                serviceRequestLiveData.postValue(Resource.error(msg, null));
-            }
-        });
+            /*
+             * REQUEST BODY
+             */
+            RequestBody customerId =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            request.getCustomerId()
+                    );
+
+            RequestBody shopId =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            request.getShopId()
+                    );
+
+            RequestBody vehicleId =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            request.getVehicleId()
+                    );
+
+            RequestBody serviceId =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            request.getServiceId()
+                    );
+
+            RequestBody problemDescription =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            request.getProblemDescription()
+                    );
+
+            /*
+             * LOCATION JSON
+             */
+            Gson gson = new Gson();
+
+            String locationJson =
+                    gson.toJson(
+                            request.getCustomerLocation()
+                    );
+
+            RequestBody customerLocation =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            locationJson
+                    );
+
+            RequestBody totalPrice =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            String.valueOf(
+                                    request.getTotalPrice()
+                            )
+                    );
+
+            RequestBody totalDistance =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            String.valueOf(
+                                    request.getTotalDistance()
+                            )
+                    );
+
+            RequestBody totalDuration =
+                    RequestBody.create(
+
+                            MediaType.parse("text/plain"),
+
+                            String.valueOf(
+                                    request.getTotalDuration()
+                            )
+                    );
+
+            /*
+             * API CALL
+             */
+            api.createRequest(
+
+                    imageParts,
+
+                    customerId,
+
+                    shopId,
+
+                    vehicleId,
+
+                    serviceId,
+
+                    problemDescription,
+
+                    customerLocation,
+
+                    totalPrice,
+
+                    totalDistance,
+
+                    totalDuration
+
+            ).enqueue(new Callback<ApiResponse<ServiceRequest>>() {
+
+                @Override
+                public void onResponse(
+
+                        Call<ApiResponse<ServiceRequest>> call,
+
+                        Response<ApiResponse<ServiceRequest>> response
+                ) {
+
+                    if (
+                            response.isSuccessful()
+                                    &&
+                                    response.body() != null
+                    ) {
+
+                        ApiResponse<ServiceRequest> body =
+                                response.body();
+
+                        if (body.getSuccess()) {
+
+                            Log.d(
+                                    "API_SUCCESS",
+                                    body.getMessage()
+                            );
+
+                            serviceRequestLiveData.postValue(
+
+                                    Resource.success(
+                                            body.getData()
+                                    )
+                            );
+
+                        } else {
+
+                            serviceRequestLiveData.postValue(
+
+                                    Resource.error(
+                                            body.getMessage(),
+                                            null
+                                    )
+                            );
+                        }
+
+                    } else {
+
+                        String errorMsg =
+                                parseError(response);
+
+                        serviceRequestLiveData.postValue(
+
+                                Resource.error(
+                                        errorMsg,
+                                        null
+                                )
+                        );
+                    }
+                }
+
+                @Override
+                public void onFailure(
+
+                        Call<ApiResponse<ServiceRequest>> call,
+
+                        Throwable t
+                ) {
+
+                    String msg =
+                            t.getMessage() != null
+                                    ?
+                                    t.getMessage()
+                                    :
+                                    "Network error";
+
+                    Log.d(
+                            "API_FAILURE",
+                            msg
+                    );
+
+                    serviceRequestLiveData.postValue(
+
+                            Resource.error(
+                                    msg,
+                                    null
+                            )
+                    );
+                }
+            });
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            serviceRequestLiveData.postValue(
+
+                    Resource.error(
+                            e.getMessage(),
+                            null
+                    )
+            );
+        }
     }
+
+//    public void createServiceRequest(ServiceRequest request,
+//                                     MutableLiveData<Resource<ServiceRequest>> serviceRequestLiveData) {
+//
+//        serviceRequestLiveData.postValue(Resource.loading(null));
+//
+//        api.createRequest(request).enqueue(new Callback<ApiResponse<ServiceRequest>>() {
+//            @Override
+//            public void onResponse(Call<ApiResponse<ServiceRequest>> call, Response<ApiResponse<ServiceRequest>> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//
+//                    ApiResponse<ServiceRequest> body = response.body();
+//
+//                    if (body.getSuccess()) {
+//
+//                        Log.d("API_SUCCESS", body.getMessage());
+//
+//                        serviceRequestLiveData.postValue(Resource.success(body.getData()));
+//                    } else {
+//                        serviceRequestLiveData.postValue(Resource.error(body.getMessage(), null));
+//                    }
+//
+//                } else {
+//                    String errorMsg = parseError(response);
+//                    serviceRequestLiveData.postValue(Resource.error(errorMsg, null));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ApiResponse<ServiceRequest>> call, Throwable t) {
+//                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
+//                Log.d("API_FAILURE", msg);
+//                serviceRequestLiveData.postValue(Resource.error(msg, null));
+//            }
+//        });
+//    }
 
     // ================= SEND SOS SERVICE REQUEST =================
     public void sendSOS(SOSRequest request,
@@ -751,6 +1084,79 @@ public class Repository {
                 liveData.postValue(Resource.error(t.getMessage(), null));
             }
         });
+    }
+
+    public void rateShop(
+            RateShopRequest request,
+            MutableLiveData<Resource<Object>> resource
+    ) {
+
+        resource.postValue(
+                Resource.loading(null)
+        );
+
+        api.rateShop(request).enqueue(
+                new Callback<ApiResponse<Object>>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<ApiResponse<Object>> call,
+                            Response<ApiResponse<Object>> response
+                    ) {
+
+                        if (
+                                response.isSuccessful()
+                                        &&
+                                        response.body() != null
+                        ) {
+
+                            ApiResponse<Object> body =
+                                    response.body();
+
+                            if (body.getSuccess()) {
+
+                                resource.postValue(
+                                        Resource.success(
+                                                body.getData()
+                                        )
+                                );
+
+                            } else {
+
+                                resource.postValue(
+                                        Resource.error(
+                                                body.getMessage(),
+                                                null
+                                        )
+                                );
+                            }
+
+                        } else {
+
+                            resource.postValue(
+                                    Resource.error(
+                                            "Failed to submit rating",
+                                            null
+                                    )
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<ApiResponse<Object>> call,
+                            Throwable t
+                    ) {
+
+                        resource.postValue(
+                                Resource.error(
+                                        t.getMessage(),
+                                        null
+                                )
+                        );
+                    }
+                }
+        );
     }
 
     // ================= SESSION =================

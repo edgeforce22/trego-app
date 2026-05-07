@@ -3,6 +3,7 @@ package com.example.tregoapp.customer.model;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ShopDetail implements Serializable {
 
@@ -10,6 +11,8 @@ public class ShopDetail implements Serializable {
     private String shopId;
     @SerializedName("ownerId")
     private String ownerId;
+    @SerializedName("shopImage")
+    private String shopImage;
     @SerializedName("shopName")
     private String shopName;
     @SerializedName("phoneNumber")
@@ -30,6 +33,8 @@ public class ShopDetail implements Serializable {
     private double distance;
     @SerializedName("estimatedTime")
     private double estimatedTime;
+    @SerializedName("supportedVehicles")
+    private List<String> supportedVehicles;
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
@@ -125,5 +130,21 @@ public class ShopDetail implements Serializable {
 
     public void setClosingTime(String closingTime) {
         this.closingTime = closingTime;
+    }
+
+    public List<String> getSupportedVehicles() {
+        return supportedVehicles;
+    }
+
+    public void setSupportedVehicles(List<String> supportedVehicles) {
+        this.supportedVehicles = supportedVehicles;
+    }
+
+    public String getShopImage() {
+        return shopImage;
+    }
+
+    public void setShopImage(String shopImage) {
+        this.shopImage = shopImage;
     }
 }

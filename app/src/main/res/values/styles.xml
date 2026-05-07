@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+
+    <style
+        name="VehicleChipStyle"
+        parent="Widget.Material3.Chip.Filter">
+
+        <!-- Shape -->
+        <item name="chipCornerRadius">18dp</item>
+
+        <!-- Background -->
+        <item name="chipBackgroundColor">
+            @color/chip_vehicle_bg_selector
+        </item>
+
+        <!-- Text -->
+        <item name="android:textColor">
+            @color/chip_vehicle_text_selector
+        </item>
+
+        <item name="android:textStyle">bold</item>
+
+        <item name="android:textSize">13sp</item>
+
+        <!-- Padding -->
+        <item name="chipStartPadding">10dp</item>
+
+        <item name="chipEndPadding">10dp</item>
+
+        <!-- Height -->
+        <item name="chipMinHeight">42dp</item>
+
+        <!-- Border -->
+        <item name="chipStrokeWidth">1dp</item>
+
+        <item name="chipStrokeColor">
+            @color/chip_vehicle_stroke_selector
+        </item>
+
+        <!-- Remove Icons -->
+        <item name="checkedIconVisible">false</item>
+
+        <item name="closeIconVisible">false</item>
+
+        <!-- Ripple -->
+        <item name="rippleColor">
+            #22FFE429
+        </item>
+
+    </style>
+
+</resources>

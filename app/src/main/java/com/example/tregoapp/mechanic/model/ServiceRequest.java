@@ -2,13 +2,21 @@ package com.example.tregoapp.mechanic.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ServiceRequest {
 
     @SerializedName("_id")
     private String id;
 
+    @SerializedName("requestImages")
+    private List<String> requestImages;
+
     @SerializedName("customerId")
     private String customerId;
+
+    @SerializedName("customerName")
+    private String customerName;
 
     @SerializedName("shopId")
     private String shopId;
@@ -22,6 +30,11 @@ public class ServiceRequest {
     @SerializedName("serviceId")
     private String serviceId;
 
+    @SerializedName("serviceName")
+    private String serviceName;
+
+    @SerializedName("serviceDescription")
+    private String serviceDescription;
     @SerializedName("problemDescription")
     private String problemDescription;
 
@@ -61,11 +74,15 @@ public class ServiceRequest {
     @SerializedName("shopName")
     private String shopName;
 
-    @SerializedName("serviceName")
-    private String serviceName;
+    @SerializedName("mechanicName")
+    private String mechanicName;
 
-    @SerializedName("customerName")
-    private String customerName;
+    @SerializedName("mechanicPhoneNumber")
+    private String mechanicPhoneNumber;
+
+    @SerializedName("customerPhoneNumber")
+    private String customerPhoneNumber;
+
 
     public ServiceRequest(String customerId, String shopId, String vehicleId, String serviceId, String problemDescription, Location customerLocation, double totalPrice, double totalDistance) {
         this.customerId = customerId;
@@ -224,5 +241,29 @@ public class ServiceRequest {
 
     public boolean getIsSOS() {
         return isSOS;
+    }
+
+    public List<String> getRequestImages() {
+        return requestImages;
+    }
+
+    public void setRequestImages(List<String> requestImages) {
+        this.requestImages = requestImages;
+    }
+
+    public String getServiceDescription() {
+        return serviceDescription;
+    }
+
+    public String getMechanicName() {
+        return mechanicName;
+    }
+
+    public String getMechanicPhoneNumber() {
+        return mechanicPhoneNumber;
+    }
+
+    public String getCustomerPhoneNumber() {
+        return customerPhoneNumber;
     }
 }

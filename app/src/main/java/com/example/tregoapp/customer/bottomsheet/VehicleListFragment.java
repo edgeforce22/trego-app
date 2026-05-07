@@ -118,4 +118,9 @@ public class VehicleListFragment extends BottomSheetDialogFragment {
             }
         });
     }
+
+    @Override
+    public int getTheme() {
+        return R.style.BottomSheetTransparent;
+    }
 }

@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.example.tregoapp.R;
@@ -23,7 +25,12 @@ import com.google.android.material.button.MaterialButton;
 public class ServiceCompletedFragment extends DialogFragment {
 
     private static final String REQUEST_ID = "request_id";
+    private static final String SHOP_ID = "shop_id";
     private String requestId;
+    private String shopId;
+
+    private RatingBar ratingBar;
+    private float selectedRating = 0;
 
     private MaterialButton yesBtn;
 
@@ -33,10 +40,11 @@ public class ServiceCompletedFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static ServiceCompletedFragment newInstance(String requestId) {
+    public static ServiceCompletedFragment newInstance(String requestId, String shopId) {
         ServiceCompletedFragment fragment = new ServiceCompletedFragment();
         Bundle args = new Bundle();
         args.putString(REQUEST_ID, requestId);
+        args.putString(SHOP_ID, shopId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +67,7 @@ public class ServiceCompletedFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             requestId = getArguments().getString(REQUEST_ID);
+            shopId = getArguments().getString(SHOP_ID);
         }
     }
 
@@ -71,8 +80,87 @@ public class ServiceCompletedFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        ratingBar =
+                view.findViewById(
+                        R.id.ratingBar
+                );
         yesBtn = view.findViewById(R.id.yesBtn);
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
+        viewModelObserver();
+
+        ratingBar.setOnRatingBarChangeListener(
+                (ratingBar, rating, fromUser) -> {
+
+                    selectedRating = rating;
+                }
+        );
+
+        yesBtn.setOnClickListener(v -> {
+
+            if (selectedRating <= 0) {
+
+                Toast.makeText(
+                        getContext(),
+                        "Please provide rating",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
+            yesBtn.setEnabled(false);
+
+            String userId =
+                    viewModel.getUserId();
+
+            viewModel.rateShop(
+                    shopId,
+                    userId,
+                    selectedRating
+            );
+            viewModel.confirmServiceCompletion(
+                    requestId
+            );
+        });
+    }
+
+    private void viewModelObserver() {
+        viewModel.getRateShopResource().observe(
+                getViewLifecycleOwner(),
+                resource -> {
+
+                    if (
+                            resource.getStatus()
+                                    ==
+                                    Resource.Status.SUCCESS
+                    ) {
+
+                        Toast.makeText(
+                                getContext(),
+                                "Thanks for your rating!",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+
+                    else if (
+                            resource.getStatus()
+                                    ==
+                                    Resource.Status.ERROR
+                    ) {
+
+                        if (!isRemoving()) {
+
+                            yesBtn.setEnabled(true);
+                        }
+
+                        Toast.makeText(
+                                getContext(),
+                                resource.getMessage(),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
 
         viewModel.getGenericActionResource().observe(getViewLifecycleOwner(), resource -> {
             if (resource.getStatus() == Resource.Status.SUCCESS) {
@@ -82,10 +170,6 @@ public class ServiceCompletedFragment extends DialogFragment {
             } else if (resource.getStatus() == Resource.Status.ERROR) {
                 Toast.makeText(getContext(), resource.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
-
-        yesBtn.setOnClickListener(v -> {
-            viewModel.confirmServiceCompletion(requestId);
         });
     }
 }

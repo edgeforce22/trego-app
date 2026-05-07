@@ -46,7 +46,7 @@ public class ActiveServiceRequestsAdapter extends ListAdapter<ServiceRequest, Ac
         holder.tvCustomerName.setText(request.getCustomerName() != null ? request.getCustomerName() : request.getCustomerId());
         holder.tvCustomerAddress.setText(request.getCustomerLocation().getAddress());
         if (!request.getIsSOS()) {
-            holder.tvService.setText(request.getServiceId());
+            holder.tvService.setText(request.getServiceName());
         }
         else {
             holder.tvService.setText(request.getProblemDescription());
@@ -54,6 +54,8 @@ public class ActiveServiceRequestsAdapter extends ListAdapter<ServiceRequest, Ac
         holder.tvTotalDistance.setText(request.getTotalDistance() + " km");
         holder.tvTotalDuration.setText(request.getTotalDuration() + " min");
         holder.tvCreatedAt.setText(String.valueOf(utility.formatDate(request.getCreatedAt())));
+
+        holder.tvProblemDescription.setText(request.getProblemDescription());
 
         holder.cardClick.setOnClickListener(v -> {
             onItemClickListener.onClick(request.getId());
@@ -67,7 +69,7 @@ public class ActiveServiceRequestsAdapter extends ListAdapter<ServiceRequest, Ac
     }
 
     public static class ActiveServiceRequestsViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCustomerName, tvCustomerAddress, tvService, tvTotalDistance, tvTotalDuration, tvCreatedAt;
+        TextView tvCustomerName, tvCustomerAddress, tvService, tvTotalDistance, tvTotalDuration, tvCreatedAt, tvProblemDescription;
         LinearLayout cardClick;
         public ActiveServiceRequestsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +77,7 @@ public class ActiveServiceRequestsAdapter extends ListAdapter<ServiceRequest, Ac
             tvCustomerName = itemView.findViewById(R.id.tvCustomerName);
             tvCustomerAddress = itemView.findViewById(R.id.tvCustomerAddress);
             tvService = itemView.findViewById(R.id.tvService);
+            tvProblemDescription = itemView.findViewById(R.id.tvProblemDescription);
             tvTotalDistance = itemView.findViewById(R.id.tvTotalDistance);
             tvTotalDuration = itemView.findViewById(R.id.tvTotalDuration);
             tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);

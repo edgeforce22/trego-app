@@ -2,13 +2,24 @@ package com.example.tregoapp.customer.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ServiceRequest {
 
     @SerializedName("_id")
     private String id;
 
+    @SerializedName("requestImages")
+    private List<String> requestImages;
+
     @SerializedName("customerId")
     private String customerId;
+
+    @SerializedName("customerName")
+    private String customerName;
+
+    @SerializedName("customerPhoneNumber")
+    private String customerPhoneNumber;
 
     @SerializedName("shopId")
     private String shopId;
@@ -21,6 +32,12 @@ public class ServiceRequest {
 
     @SerializedName("serviceId")
     private String serviceId;
+
+    @SerializedName("serviceName")
+    private String serviceName;
+
+    @SerializedName("serviceDescription")
+    private String serviceDescription;
 
     @SerializedName("problemDescription")
     private String problemDescription;
@@ -52,9 +69,6 @@ public class ServiceRequest {
     @SerializedName("shopName")
     private String shopName;
 
-    @SerializedName("serviceName")
-    private String serviceName;
-
     @SerializedName("isActive")
     private boolean isActive;
 
@@ -67,8 +81,24 @@ public class ServiceRequest {
     @SerializedName("totalMechanics")
     private String totalMechanics;
 
+    @SerializedName("shopRating")
+    private Double shopRating;
+
+    @SerializedName("shopRatingCount")
+    private Double shopRatingCount;
+
+    @SerializedName("shopRatingSum")
+    private Double shopRatingSum;
+
     @SerializedName("isCompletelyRejected")
     private boolean isCompletelyRejected;
+
+    @SerializedName("mechanicName")
+    private String mechanicName;
+
+    @SerializedName("mechanicPhoneNumber")
+    private String mechanicPhoneNumber;
+
 
     public ServiceRequest(String customerId, String shopId, String vehicleId, String serviceId, String problemDescription, Location customerLocation, double totalPrice, double totalDistance, double totalDuration) {
         this.customerId = customerId;
@@ -236,5 +266,45 @@ public class ServiceRequest {
 
     public boolean isCompletelyRejected() {
         return isCompletelyRejected;
+    }
+
+    public List<String> getRequestImages() {
+        return requestImages;
+    }
+
+    public void setRequestImages(List<String> requestImages) {
+        this.requestImages = requestImages;
+    }
+
+    public String getServiceDescription() {
+        return serviceDescription;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getMechanicName() {
+        return mechanicName;
+    }
+
+    public Double getShopRating() {
+        return shopRating;
+    }
+
+    public Double getShopRatingCount() {
+        return shopRatingCount;
+    }
+
+    public Double getShopRatingSum() {
+        return shopRatingSum;
+    }
+
+    public String getCustomerPhoneNumber() {
+        return customerPhoneNumber;
+    }
+
+    public String getMechanicPhoneNumber() {
+        return mechanicPhoneNumber;
     }
 }

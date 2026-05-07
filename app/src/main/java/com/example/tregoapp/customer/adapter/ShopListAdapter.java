@@ -1,14 +1,20 @@
 package com.example.tregoapp.customer.adapter;
 
+import static com.example.tregoapp.BuildConfig.BASE_URL;
+
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.tregoapp.customer.listener.OnItemClickListener;
 import com.example.tregoapp.R;
 import com.example.tregoapp.customer.model.ShopDetail;
@@ -66,8 +72,75 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
 
         holder.tvShopName.setText(shop.getShopName());
         holder.tvRating.setText(String.valueOf(shop.getRating()));
+
+        String vehicles = "";
+
+        if (shop.getSupportedVehicles() != null
+                && !shop.getSupportedVehicles().isEmpty()) {
+
+            vehicles = TextUtils.join(
+                    ", ",
+                    shop.getSupportedVehicles()
+            );
+
+        } else {
+
+            vehicles = "No vehicles available";
+        }
+
+        holder.tvService.setText(vehicles);
+
         holder.tvDistance.setText(shop.getDistance() + " km");
         holder.tvDuration.setText(shop.getEstimatedTime() + " min");
+
+        String imageUrl =
+                shop.getShopImage();
+
+        Log.d(
+                "SHOP_IMAGE",
+                String.valueOf(imageUrl)
+        );
+
+        if (
+                imageUrl != null
+                        &&
+                        !imageUrl.isEmpty()
+        ) {
+
+            String finalUrl =
+                    imageUrl.startsWith("http")
+                            ? imageUrl
+                            : BASE_URL + "/" + imageUrl;
+
+            Log.d(
+                    "FINAL_IMAGE_URL",
+                    finalUrl
+            );
+
+            Glide.with(holder.itemView.getContext())
+
+                    .load(finalUrl)
+
+                    .placeholder(
+                            R.drawable.shop
+                    )
+
+                    .error(
+                            R.drawable.shop
+                    )
+
+                    .centerCrop()
+
+                    .into(holder.shopImage);
+
+        } else {
+
+            holder.shopImage.setImageResource(
+                    R.drawable.shop
+            );
+        }
+
+
 
         holder.shopCard.setOnClickListener(v -> {
             onItemClickListener.onClick(shop);
@@ -84,9 +157,12 @@ public class ShopListAdapter extends RecyclerView.Adapter<ShopListAdapter.ViewHo
         MaterialCardView shopCard;
         TextView tvShopName, tvRating, tvService, tvDistance, tvDuration, selectBtn;
 
+        ImageView shopImage;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            shopImage = itemView.findViewById(R.id.shopImage);
             shopCard = itemView.findViewById(R.id.shopCard);
             tvShopName = itemView.findViewById(R.id.tvShopName);
             tvRating = itemView.findViewById(R.id.tvRating);

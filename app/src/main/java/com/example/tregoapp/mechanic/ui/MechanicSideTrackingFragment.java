@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -71,6 +72,8 @@ public class MechanicSideTrackingFragment extends Fragment {
     private TextView tvTotalPrice;
     private MaterialCardView callButton;
     private MaterialButton completeBtn;
+    private TextView tvServiceName;
+    private TextView tvServiceDescription;
 
     private double customerLat;
     private double customerLng;
@@ -127,6 +130,11 @@ public class MechanicSideTrackingFragment extends Fragment {
         mapView = view.findViewById(R.id.map);
         callButton = view.findViewById(R.id.callButton);
         completeBtn = view.findViewById(R.id.completeBtn);
+        tvServiceName =
+                view.findViewById(R.id.tvServiceName);
+
+        tvServiceDescription =
+                view.findViewById(R.id.tvServiceDescription);
 
         viewModel = new ViewModelProvider(requireActivity()).get(ViewModel.class);
         LoaderManager.show(this);
@@ -156,15 +164,47 @@ public class MechanicSideTrackingFragment extends Fragment {
                 return;
             }
 
-            Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse("tel:" + customerPhoneNumber));
+            if (
+                    customerPhoneNumber == null
+                            ||
+                            customerPhoneNumber.isEmpty()
+            ) {
+
+                Toast.makeText(
+                        requireContext(),
+                        "Phone number unavailable",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
+            Intent intent =
+                    new Intent(Intent.ACTION_CALL);
+
+            intent.setData(
+                    Uri.parse(
+                            "tel:" + customerPhoneNumber
+                    )
+            );
+
             startActivity(intent);
         });
 
         completeBtn.setOnClickListener(v -> {
+
+            completeBtn.setEnabled(false);
+
             LoaderManager.show(this);
-            viewModel.completeServiceRequest(serviceRequestId);
+
+            viewModel.completeServiceRequest(
+                    serviceRequestId
+            );
         });
+//        completeBtn.setOnClickListener(v -> {
+//            LoaderManager.show(this);
+//            viewModel.completeServiceRequest(serviceRequestId);
+//        });
 
         requireActivity().getOnBackPressedDispatcher().addCallback(
                 getViewLifecycleOwner(),
@@ -218,14 +258,59 @@ public class MechanicSideTrackingFragment extends Fragment {
             }
         });
 
-        viewModel.getAcceptServiceRequestLiveData().observe(getViewLifecycleOwner(), serviceRequest -> {
-            if (serviceRequest == null) return;
-            LoaderManager.hide(this);
+        viewModel.getAcceptServiceRequestLiveData().observe(
+                getViewLifecycleOwner(),
+                serviceRequest -> {
 
-            if ("completed".equalsIgnoreCase(serviceRequest.getStatus())) {
-                navigateTo();
-            }
-        });
+                    if (serviceRequest == null) {
+                        return;
+                    }
+
+                    LoaderManager.hide(this);
+
+                    /*
+                     * JOB COMPLETION REQUEST SENT
+                     */
+                    if (
+                            "waiting_for_confirmation"
+                                    .equalsIgnoreCase(
+                                            serviceRequest.getStatus()
+                                    )
+                    ) {
+
+                        Toast.makeText(
+                                requireContext(),
+                                "Waiting for customer confirmation",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        navigateTo();
+
+                        return;
+                    }
+
+                    /*
+                     * FINAL COMPLETED
+                     */
+                    if (
+                            "completed"
+                                    .equalsIgnoreCase(
+                                            serviceRequest.getStatus()
+                                    )
+                    ) {
+
+                        navigateTo();
+                    }
+                });
+
+//        viewModel.getAcceptServiceRequestLiveData().observe(getViewLifecycleOwner(), serviceRequest -> {
+//            if (serviceRequest == null) return;
+//            LoaderManager.hide(this);
+//
+//            if ("completed".equalsIgnoreCase(serviceRequest.getStatus())) {
+//                navigateTo();
+//            }
+//        });
 
         viewModel.getAcceptedServiceRequestLiveData().observe(getViewLifecycleOwner(), serviceRequest -> {
             LoaderManager.hide(this);
@@ -239,9 +324,67 @@ public class MechanicSideTrackingFragment extends Fragment {
 
             tvTotalPrice.setText(String.format(Locale.getDefault(), "₹ %.2f", serviceRequest.getTotalPrice()));
 
-            if (serviceRequest.getCustomerId() != null) {
-                viewModel.fetchCustomerDetails(serviceRequest.getCustomerId());
+            /*
+             * SOS REQUEST
+             */
+            if (serviceRequest.getIsSOS()) {
+
+                tvServiceName.setText(
+                        "SOS Emergency Request"
+                );
+
+                tvServiceName.setTextColor(
+                        Color.parseColor("#FF3B30")
+                );
+
+                tvServiceDescription.setText(
+
+                        serviceRequest.getProblemDescription() != null
+
+                                ? serviceRequest.getProblemDescription()
+
+                                : "Emergency assistance required"
+                );
             }
+
+            /*
+             * NORMAL REQUEST
+             */
+            else {
+
+                tvServiceName.setText(
+
+                        serviceRequest.getServiceName() != null
+
+                                ? serviceRequest.getServiceName()
+
+                                : "Vehicle Service"
+                );
+
+                tvServiceName.setTextColor(
+                        Color.parseColor("#1F1F1F")
+                );
+
+                tvServiceDescription.setText(
+
+                        serviceRequest.getServiceDescription() != null
+
+                                ? serviceRequest.getServiceDescription()
+
+                                : serviceRequest.getProblemDescription()
+                );
+            }
+
+            tvCustomerName.setText(
+                    serviceRequest.getCustomerName()
+            );
+
+            customerPhoneNumber =
+                    serviceRequest.getCustomerPhoneNumber();
+
+//            if (serviceRequest.getCustomerId() != null) {
+//                viewModel.fetchCustomerDetails(serviceRequest.getCustomerId());
+//            }
 
             if(serviceRequest.getCustomerLocation() == null) {
                 return;
@@ -277,12 +420,12 @@ public class MechanicSideTrackingFragment extends Fragment {
             calculateDistanceMinutes(route.getDistance(), route.getDuration());
         });
 
-        viewModel.getCustomerDetailsLiveData().observe(getViewLifecycleOwner(), customer -> {
-            if (customer != null) {
-                tvCustomerName.setText(customer.getName());
-                customerPhoneNumber = customer.getPhoneNumber();
-            }
-        });
+//        viewModel.getCustomerDetailsLiveData().observe(getViewLifecycleOwner(), customer -> {
+//            if (customer != null) {
+//                tvCustomerName.setText(customer.getName());
+//                customerPhoneNumber = customer.getPhoneNumber();
+//            }
+//        });
 
         viewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
             if (currentUser == null) {

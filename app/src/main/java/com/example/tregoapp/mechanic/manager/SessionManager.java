@@ -26,6 +26,7 @@ public class SessionManager {
     }
 
     public void saveUser(User user) {
+        if (user == null) return;
         sharedPreferences.edit()
             .putBoolean(KEY_IS_LOGGED_IN, true)
             .putString(KEY_USER_SHOP_ID, user.getShopId())

@@ -7,6 +7,9 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Looper;
 
+import androidx.fragment.app.FragmentActivity;
+
+import com.example.tregoapp.customer.dialog.EnableLocationDialogFragment;
 import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -35,6 +38,29 @@ public class DeviceLocationHelper {
 
     @SuppressLint("MissingPermission")
     public void getCurrentLocation(Context context, LocationListener listener) {
+
+        /*
+         * CHECK LOCATION ENABLED
+         */
+        if (!isLocationEnabled(context)) {
+            if (context instanceof FragmentActivity) {
+
+                EnableLocationDialogFragment
+                        .newInstance()
+                        .show(
+                                ((FragmentActivity) context)
+                                        .getSupportFragmentManager(),
+                                "EnableLocation"
+                        );
+            }
+            listener.onLocation(
+                    0.0,
+                    0.0,
+                    "Location disabled"
+            );
+            return;
+        }
+
         // Request a FRESH location fix instead of relying on potentially stale cached data
         CurrentLocationRequest locationRequest = new CurrentLocationRequest.Builder()
                 .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
@@ -92,6 +118,28 @@ public class DeviceLocationHelper {
     @SuppressLint("MissingPermission")
     public void startLocationUpdates(Context context, LocationListener listener) {
 
+        /*
+         * CHECK LOCATION ENABLED
+         */
+        if (!isLocationEnabled(context)) {
+            if (context instanceof FragmentActivity) {
+
+                EnableLocationDialogFragment
+                        .newInstance()
+                        .show(
+                                ((FragmentActivity) context)
+                                        .getSupportFragmentManager(),
+                                "EnableLocation"
+                        );
+            }
+            listener.onLocation(
+                    0.0,
+                    0.0,
+                    "Location disabled"
+            );
+            return;
+        }
+
         LocationRequest request =
                 new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 3000) // every 3 sec
                         .setMinUpdateDistanceMeters(10) // only if moved 10m
@@ -128,6 +176,21 @@ public class DeviceLocationHelper {
             fusedLocationClient.removeLocationUpdates(locationCallback);
         }
     }
+
+    public static boolean isLocationEnabled(Context context) {
+
+        android.location.LocationManager locationManager =
+                (android.location.LocationManager)
+                        context.getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(
+                android.location.LocationManager.GPS_PROVIDER
+        ) || locationManager.isProviderEnabled(
+                android.location.LocationManager.NETWORK_PROVIDER
+        );
+    }
+
+}
 //
 //
 //
@@ -287,4 +350,4 @@ public class DeviceLocationHelper {
 //            }
 //        }
 //    }
-}
+//}

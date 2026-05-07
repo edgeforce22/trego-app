@@ -6,7 +6,9 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tregoapp.mechanic.model.CancelRequestById;
+import com.example.tregoapp.mechanic.model.CreateServicesRequest;
 import com.example.tregoapp.mechanic.model.GetRequestByTwoId;
+import com.example.tregoapp.mechanic.model.MechanicDetails;
 import com.example.tregoapp.mechanic.model.map.Route;
 import com.example.tregoapp.mechanic.model.map.RouteResponse;
 import com.example.tregoapp.mechanic.model.AcceptServiceRequest;
@@ -28,8 +30,13 @@ import com.example.tregoapp.mechanic.model.response.ApiResponse;
 import com.example.tregoapp.mechanic.model.response.User;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -181,33 +188,34 @@ public class Repository {
         });
     }
 
-    // ================= SHOP REGISTER =================
-    public void registerShop(ShopDetail shop,
-                             MutableLiveData<ShopDetail> shopDetail,
-                             MutableLiveData<User> currentUser,
-                             MutableLiveData<AuthState> authState) {
 
-        api.registerShop(shop).enqueue(new Callback<ApiResponse<RegisterShopResponse>>() {
+    // ================= REGISTER =================
+    public void mechanicCompleteDetails(GetRequestById request,
+                                 MutableLiveData<AuthState> authState,
+                                 MutableLiveData<MechanicDetails> currentUser) {
+
+        api.mechanicCompleteDetails(request).enqueue(new Callback<ApiResponse<MechanicDetails>>() {
             @Override
-            public void onResponse(Call<ApiResponse<RegisterShopResponse>> call, Response<ApiResponse<RegisterShopResponse>> response) {
-
+            public void onResponse(Call<ApiResponse<MechanicDetails>> call, Response<ApiResponse<MechanicDetails>> response) {
                 if (response.isSuccessful() && response.body() != null) {
 
-                    ApiResponse<RegisterShopResponse> body = response.body();
+                    ApiResponse<MechanicDetails> body = response.body();
 
                     if (body.getSuccess()) {
 
                         Log.d("API_SUCCESS", body.getMessage());
 
-                        if (body.getData() != null) {
-                            currentUser.postValue(body.getData().getMechanic());
-                            mSessionManager.saveUser(body.getData().getMechanic());
-                            shopDetail.postValue(body.getData().getShop());
-                            mSessionManager.saveShopDetails(body.getData().getShop());
-                        }
                         authState.postValue(
                                 new AuthState(true, body.getMessage())
                         );
+
+                        if (body.getData() != null) {
+                            currentUser.postValue(body.getData());
+                            mSessionManager.saveUser(body.getData().getMechanicDetails());
+                            if (body.getData().getShopDetail() != null) {
+                                mSessionManager.saveShopDetails(body.getData().getShopDetail());
+                            }
+                        }
 
                     } else {
                         authState.postValue(
@@ -222,13 +230,399 @@ public class Repository {
             }
 
             @Override
-            public void onFailure(Call<ApiResponse<RegisterShopResponse>> call, Throwable t) {
+            public void onFailure(Call<ApiResponse<MechanicDetails>> call, Throwable t) {
                 String msg = t.getMessage() != null ? t.getMessage() : "Network error";
                 Log.d("API_FAILURE", msg);
                 authState.postValue(new AuthState(false, msg));
             }
         });
     }
+
+    // ================= SHOP REGISTER =================
+
+    public void registerShop(
+
+            String imagePath,
+
+            ShopDetail shop,
+
+            MutableLiveData<ShopDetail> shopDetail,
+
+            MutableLiveData<User> currentUser,
+
+            MutableLiveData<AuthState> authState
+    ) {
+
+        try {
+
+            Log.d("REGISTER_FLOW", "Repository called");
+
+            /*
+             * IMAGE PATH CHECK
+             */
+            if (imagePath == null || imagePath.isEmpty()) {
+
+                Log.d("REGISTER_FLOW", "Image path is null");
+
+                authState.postValue(
+                        new AuthState(
+                                false,
+                                "Please select shop image"
+                        )
+                );
+
+                return;
+            }
+
+            Log.d("IMAGE_PATH", imagePath);
+
+            /*
+             * FILE CHECK
+             */
+            File file = new File(imagePath);
+
+            Log.d(
+                    "FILE_EXISTS",
+                    String.valueOf(file.exists())
+            );
+
+            if (!file.exists()) {
+
+                authState.postValue(
+                        new AuthState(
+                                false,
+                                "Image file not found"
+                        )
+                );
+
+                return;
+            }
+
+            /*
+             * IMAGE REQUEST BODY
+             */
+            RequestBody requestFile =
+                    RequestBody.create(
+                            MediaType.parse("image/*"),
+                            file
+                    );
+
+            /*
+             * MULTIPART IMAGE
+             */
+            MultipartBody.Part imagePart =
+                    MultipartBody.Part.createFormData(
+
+                            "shopImage",
+
+                            file.getName(),
+
+                            requestFile
+                    );
+
+            /*
+             * TEXT REQUEST BODIES
+             */
+            RequestBody ownerId =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            shop.getOwnerId()
+                    );
+
+            RequestBody shopName =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            shop.getShopName()
+                    );
+
+            RequestBody phoneNumber =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            shop.getPhoneNumber()
+                    );
+
+            RequestBody address =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            shop.getAddress()
+                    );
+
+            RequestBody latitude =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            String.valueOf(
+                                    shop.getLatitude()
+                            )
+                    );
+
+            RequestBody longitude =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            String.valueOf(
+                                    shop.getLongitude()
+                            )
+                    );
+
+            RequestBody openingTime =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            shop.getOpeningTime()
+                    );
+
+            RequestBody closingTime =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            shop.getClosingTime()
+                    );
+
+            /*
+             * SUPPORTED VEHICLES JSON
+             */
+            Gson gson = new Gson();
+
+            String vehiclesJson =
+                    gson.toJson(
+                            shop.getSupportedVehicles()
+                    );
+
+            Log.d(
+                    "SUPPORTED_VEHICLES",
+                    vehiclesJson
+            );
+
+            RequestBody supportedVehicles =
+                    RequestBody.create(
+                            MediaType.parse("text/plain"),
+                            vehiclesJson
+                    );
+
+            Log.d(
+                    "REGISTER_FLOW",
+                    "Calling API"
+            );
+
+            /*
+             * API CALL
+             */
+            api.registerShop(
+
+                    imagePart,
+
+                    ownerId,
+
+                    shopName,
+
+                    phoneNumber,
+
+                    address,
+
+                    latitude,
+
+                    longitude,
+
+                    openingTime,
+
+                    closingTime,
+
+                    supportedVehicles
+
+            ).enqueue(new Callback<ApiResponse<RegisterShopResponse>>() {
+
+                @Override
+                public void onResponse(
+
+                        Call<ApiResponse<RegisterShopResponse>> call,
+
+                        Response<ApiResponse<RegisterShopResponse>> response
+                ) {
+
+                    Log.d(
+                            "REGISTER_RESPONSE_CODE",
+                            String.valueOf(response.code())
+                    );
+
+                    if (
+                            response.isSuccessful()
+                                    &&
+                                    response.body() != null
+                    ) {
+
+                        ApiResponse<RegisterShopResponse>
+                                body = response.body();
+
+                        Log.d(
+                                "REGISTER_RESPONSE",
+                                body.getMessage()
+                        );
+
+                        if (body.getSuccess()) {
+
+                            if (body.getData() != null) {
+
+                                /*
+                                 * GET RESPONSE DATA
+                                 */
+                                User mechanic =
+                                        body.getData()
+                                                .getMechanic();
+
+                                ShopDetail shop =
+                                        body.getData()
+                                                .getShop();
+
+                                /*
+                                 * UPDATE LIVE DATA
+                                 */
+                                currentUser.postValue(
+                                        mechanic
+                                );
+
+                                shopDetail.postValue(
+                                        shop
+                                );
+
+                                /*
+                                 * SAVE USER SESSION
+                                 */
+                                mSessionManager.saveUser(
+                                        mechanic
+                                );
+
+                                /*
+                                 * SAVE SHOP SESSION
+                                 */
+                                mSessionManager.saveShopDetails(
+                                        shop
+                                );
+
+                                Log.d(
+                                        "SHOP_ID_SAVED",
+                                        mechanic.getShopId()
+                                );
+                            }
+
+                            authState.postValue(
+                                    new AuthState(
+                                            true,
+                                            body.getMessage()
+                                    )
+                            );
+
+                        } else {
+
+                            authState.postValue(
+                                    new AuthState(
+                                            false,
+                                            body.getMessage()
+                                    )
+                            );
+                        }
+
+                    } else {
+
+                        String errorMsg =
+                                parseError(response);
+
+                        Log.d(
+                                "REGISTER_ERROR",
+                                errorMsg
+                        );
+
+                        authState.postValue(
+                                new AuthState(
+                                        false,
+                                        errorMsg
+                                )
+                        );
+                    }
+                }
+
+                @Override
+                public void onFailure(
+
+                        Call<ApiResponse<RegisterShopResponse>> call,
+
+                        Throwable t
+                ) {
+
+                    Log.d(
+                            "REGISTER_FAILURE",
+                            t.getMessage()
+                    );
+
+                    authState.postValue(
+                            new AuthState(
+                                    false,
+                                    t.getMessage()
+                            )
+                    );
+                }
+            });
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            Log.d(
+                    "REGISTER_EXCEPTION",
+                    e.getMessage()
+            );
+
+            authState.postValue(
+                    new AuthState(
+                            false,
+                            e.getMessage()
+                    )
+            );
+        }
+    }
+//    public void registerShop(String imagePath, ShopDetail shop,
+//                             MutableLiveData<ShopDetail> shopDetail,
+//                             MutableLiveData<User> currentUser,
+//                             MutableLiveData<AuthState> authState) {
+//
+//        api.registerShop(shop).enqueue(new Callback<ApiResponse<RegisterShopResponse>>() {
+//            @Override
+//            public void onResponse(Call<ApiResponse<RegisterShopResponse>> call, Response<ApiResponse<RegisterShopResponse>> response) {
+//
+//                if (response.isSuccessful() && response.body() != null) {
+//
+//                    ApiResponse<RegisterShopResponse> body = response.body();
+//
+//                    if (body.getSuccess()) {
+//
+//                        Log.d("API_SUCCESS", body.getMessage());
+//
+//                        if (body.getData() != null) {
+//                            currentUser.postValue(body.getData().getMechanic());
+//                            mSessionManager.saveUser(body.getData().getMechanic());
+//                            shopDetail.postValue(body.getData().getShop());
+//                            mSessionManager.saveShopDetails(body.getData().getShop());
+//                        }
+//                        authState.postValue(
+//                                new AuthState(true, body.getMessage())
+//                        );
+//
+//                    } else {
+//                        authState.postValue(
+//                                new AuthState(false, body.getMessage())
+//                        );
+//                    }
+//
+//                } else {
+//                    String errorMsg = parseError(response);
+//                    authState.postValue(new AuthState(false, errorMsg));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ApiResponse<RegisterShopResponse>> call, Throwable t) {
+//                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
+//                Log.d("API_FAILURE", msg);
+//                authState.postValue(new AuthState(false, msg));
+//            }
+//        });
+//    }
 
 
     // ================= WORKER SHOP REGISTER =================
@@ -280,44 +674,99 @@ public class Repository {
 
 
     // ================= CREATE SERVICE =================
-    public void createService(ServiceDetail service,
-                             MutableLiveData<AuthState> authState) {
+    public void createService(
+            CreateServicesRequest request,
+            MutableLiveData<AuthState> authState
+    ) {
 
-        api.createService(service).enqueue(new Callback<ApiResponse<ServiceDetail>>() {
-            @Override
-            public void onResponse(Call<ApiResponse<ServiceDetail>> call, Response<ApiResponse<ServiceDetail>> response) {
-                if (response.isSuccessful() && response.body() != null) {
+        api.createService(request)
+                .enqueue(new Callback<ApiResponse<Object>>() {
 
-                    ApiResponse<ServiceDetail> body = response.body();
+                    @Override
+                    public void onResponse(
+                            Call<ApiResponse<Object>> call,
+                            Response<ApiResponse<Object>> response
+                    ) {
 
-                    if (body.getSuccess()) {
+                        if (response.isSuccessful()
+                                && response.body() != null) {
 
-                        Log.d("API_SUCCESS", body.getMessage());
+                            ApiResponse<Object> body =
+                                    response.body();
 
-                        authState.postValue(
-                                new AuthState(true, body.getMessage())
-                        );
+                            authState.postValue(
+                                    new AuthState(
+                                            body.getSuccess(),
+                                            body.getMessage()
+                                    )
+                            );
 
-                    } else {
-                        authState.postValue(
-                                new AuthState(false, body.getMessage())
-                        );
+                        } else {
+
+                            authState.postValue(
+                                    new AuthState(
+                                            false,
+                                            parseError(response)
+                                    )
+                            );
+                        }
                     }
 
-                } else {
-                    String errorMsg = parseError(response);
-                    authState.postValue(new AuthState(false, errorMsg));
-                }
-            }
+                    @Override
+                    public void onFailure(
+                            Call<ApiResponse<Object>> call,
+                            Throwable t
+                    ) {
 
-            @Override
-            public void onFailure(Call<ApiResponse<ServiceDetail>> call, Throwable t) {
-                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
-                Log.d("API_FAILURE", msg);
-                authState.postValue(new AuthState(false, msg));
-            }
-        });
+                        authState.postValue(
+                                new AuthState(
+                                        false,
+                                        t.getMessage()
+                                )
+                        );
+                    }
+                });
     }
+
+
+//    public void createService(ServiceDetail service,
+//                             MutableLiveData<AuthState> authState) {
+//
+//        api.createService(service).enqueue(new Callback<ApiResponse<ServiceDetail>>() {
+//            @Override
+//            public void onResponse(Call<ApiResponse<ServiceDetail>> call, Response<ApiResponse<ServiceDetail>> response) {
+//                if (response.isSuccessful() && response.body() != null) {
+//
+//                    ApiResponse<ServiceDetail> body = response.body();
+//
+//                    if (body.getSuccess()) {
+//
+//                        Log.d("API_SUCCESS", body.getMessage());
+//
+//                        authState.postValue(
+//                                new AuthState(true, body.getMessage())
+//                        );
+//
+//                    } else {
+//                        authState.postValue(
+//                                new AuthState(false, body.getMessage())
+//                        );
+//                    }
+//
+//                } else {
+//                    String errorMsg = parseError(response);
+//                    authState.postValue(new AuthState(false, errorMsg));
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ApiResponse<ServiceDetail>> call, Throwable t) {
+//                String msg = t.getMessage() != null ? t.getMessage() : "Network error";
+//                Log.d("API_FAILURE", msg);
+//                authState.postValue(new AuthState(false, msg));
+//            }
+//        });
+//    }
 
     // ================= UPDATE STATUS =================
     public void statusUpdate(StatusUpdate statusUpdate,

@@ -10,8 +10,19 @@ public class ShopDetail {
     private String shopId;
     @SerializedName("ownerId")
     private String ownerId;
+    @SerializedName("shopImage")
+    private String shopImage;
     @SerializedName("shopName")
     private String shopName;
+
+    @SerializedName("rating")
+    private double rating;
+
+    @SerializedName("ratingCount")
+    private Integer ratingCount;
+
+    @SerializedName("ratingSum")
+    private double ratingSum;
     @SerializedName("phoneNumber")
     private String phoneNumber;
     @SerializedName("address")
@@ -26,8 +37,10 @@ public class ShopDetail {
     private String closingTime;
     @SerializedName("workers")
     private List<String> workers;
+    @SerializedName("supportedVehicles")
+    private List<String> supportedVehicles;
 
-    public ShopDetail(String ownerId, String shopName, String phoneNumber, String address, double latitude, double longitude, String openingTime, String closingTime) {
+    public ShopDetail(String ownerId, String shopName, String phoneNumber, String address, double latitude, double longitude, String openingTime, String closingTime, List<String> supportedVehicles) {
         this.ownerId = ownerId;
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
@@ -36,6 +49,7 @@ public class ShopDetail {
         this.longitude = longitude;
         this.openingTime = openingTime;
         this.closingTime = closingTime;
+        this.supportedVehicles = supportedVehicles;
     }
 
     public String getShopId() {
@@ -112,5 +126,29 @@ public class ShopDetail {
 
     public void setWorkers(List<String> workers) {
         this.workers = workers;
+    }
+
+    public List<String> getSupportedVehicles() {
+        return supportedVehicles;
+    }
+
+    public void setSupportedVehicles(List<String> supportedVehicles) {
+        this.supportedVehicles = supportedVehicles;
+    }
+
+    public String getShopImage() {
+        return shopImage;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public double getRatingSum() {
+        return ratingSum;
     }
 }

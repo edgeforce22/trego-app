@@ -93,8 +93,7 @@
     <!-- Form Card -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="#FFFFFF"
         app:cardCornerRadius="24dp"
         app:strokeColor="#ECECEC"
@@ -282,6 +281,188 @@
                             android:gravity="center_vertical"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Shop Image -->
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shop Image"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="#777777"
+                        android:layout_marginBottom="10dp" />
+
+                    <com.google.android.material.card.MaterialCardView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="170dp"
+
+                        android:layout_marginBottom="18dp"
+
+                        app:cardCornerRadius="18dp"
+
+                        app:cardElevation="0dp"
+
+                        app:strokeWidth="1dp"
+
+                        app:strokeColor="#FFE429"
+
+                        app:cardBackgroundColor="#FFFDF5">
+
+                        <FrameLayout
+                            android:id="@+id/btnChooseShopImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+
+                            android:clickable="true"
+                            android:focusable="true"
+
+                            android:foreground="?attr/selectableItemBackground">
+
+                            <!-- Selected Image -->
+
+                            <ImageView
+                                android:id="@+id/ivShopImage"
+
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+
+                                android:scaleType="centerCrop"
+
+                                android:visibility="gone"/>
+
+                            <!-- Placeholder Content -->
+
+                            <LinearLayout
+                                android:id="@+id/layoutImagePlaceholder"
+
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+
+                                android:gravity="center"
+
+                                android:orientation="vertical"
+
+                                android:padding="20dp">
+
+                                <ImageView
+                                    android:layout_width="42dp"
+                                    android:layout_height="42dp"
+
+                                    android:src="@drawable/image_bg"
+                                    app:tint="#C7A500"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    android:layout_marginTop="10dp"
+
+                                    android:text="Click here to add shop image"
+
+                                    android:textColor="#7A5B00"
+
+                                    android:textSize="13sp"
+
+                                    android:textStyle="bold"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+
+                                    android:layout_marginTop="4dp"
+
+                                    android:text="PNG, JPG"
+
+                                    android:textColor="#A1A1A1"
+
+                                    android:textSize="11sp"/>
+
+                            </LinearLayout>
+
+                        </FrameLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Supported Vehicles -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="Supported Vehicles"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="#777777"
+                        android:layout_marginBottom="10dp" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="18dp"
+                        app:cardBackgroundColor="#F8F8F8"
+                        app:cardCornerRadius="18dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="0dp">
+
+                        <com.google.android.material.chip.ChipGroup
+                            android:id="@+id/chipVehicleGroup"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="12dp"
+                            app:chipSpacingHorizontal="8dp"
+                            app:chipSpacingVertical="8dp"
+                            app:singleSelection="false"
+                            app:selectionRequired="false">
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipBicycle"
+                                style="@style/VehicleChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bicycle"
+                                app:checkedIconVisible="false"
+                                android:checkable="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipBike"
+                                style="@style/VehicleChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Bike"
+                                app:checkedIconVisible="false"
+                                android:checkable="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipScooter"
+                                style="@style/VehicleChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Scooter"
+                                app:checkedIconVisible="false"
+                                android:checkable="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipCar"
+                                style="@style/VehicleChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Car"
+                                app:checkedIconVisible="false"
+                                android:checkable="true" />
+
+                            <com.google.android.material.chip.Chip
+                                android:id="@+id/chipHeavy"
+                                style="@style/VehicleChipStyle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Heavy"
+                                app:checkedIconVisible="false"
+                                android:checkable="true" />
+
+                        </com.google.android.material.chip.ChipGroup>
+
+                    </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
 

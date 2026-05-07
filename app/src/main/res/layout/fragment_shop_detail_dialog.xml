@@ -23,6 +23,7 @@
             android:layout_height="200dp">
 
             <ImageView
+                android:id="@+id/shopImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/shop"
@@ -256,6 +257,29 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+            <!-- Supported Vehicles -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Supported Vehicles"
+                android:textColor="#8A8F98"
+                android:textSize="12sp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/layoutSupportedVehicles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+
+            </HorizontalScrollView>
 
             <!-- Close Button -->
             <com.google.android.material.button.MaterialButton

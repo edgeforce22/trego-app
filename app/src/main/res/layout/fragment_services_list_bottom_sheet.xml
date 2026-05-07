@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="6dp"
+    android:background="@drawable/bg_top_border_rounded"
+    android:elevation="6dp"
+    tools:context=".mechanic.bottomsheet.ServicesListBottomSheetFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:orientation="vertical"
+
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="18dp">
+
+        <!-- Drag Handle -->
+
+        <View
+            android:layout_width="42dp"
+            android:layout_height="5dp"
+
+            android:layout_gravity="center"
+
+            android:background="#D9D9D9"/>
+
+        <!-- Header -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="14dp"
+
+            android:gravity="center_vertical"
+
+            android:orientation="horizontal">
+
+            <!-- Title -->
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_weight="1"
+
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="Available Services"
+
+                    android:textColor="#1F1F1F"
+
+                    android:textSize="18sp"
+
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:layout_marginTop="2dp"
+
+                    android:text="Select your required service"
+
+                    android:textColor="#8C8C8C"
+
+                    android:textSize="12sp"/>
+
+            </LinearLayout>
+
+            <!-- Add Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/goToCreateService"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="21dp"
+                app:strokeWidth="0dp"
+                app:cardElevation="0dp">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/add"
+                    app:tint="@color/black" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+        <!-- RecyclerView -->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvServiceList"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="16dp"
+
+            android:clipToPadding="false"
+
+            android:overScrollMode="never"
+
+            android:paddingBottom="6dp"
+
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    </LinearLayout>
+
+</LinearLayout>

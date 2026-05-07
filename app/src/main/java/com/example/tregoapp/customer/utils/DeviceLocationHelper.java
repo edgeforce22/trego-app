@@ -10,7 +10,9 @@ import android.location.Location;
 import android.os.Looper;
 
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.example.tregoapp.customer.dialog.EnableLocationDialogFragment;
 import com.google.android.gms.location.*;
 import com.google.android.gms.location.CurrentLocationRequest;
 import com.google.android.gms.location.Priority;
@@ -34,6 +36,29 @@ public class DeviceLocationHelper {
 
     @SuppressLint("MissingPermission")
     public void getCurrentLocation(Context context, LocationListener listener) {
+
+        /*
+         * CHECK LOCATION ENABLED
+         */
+        if (!isLocationEnabled(context)) {
+            if (context instanceof FragmentActivity) {
+                EnableLocationDialogFragment
+                        .newInstance()
+                        .show(
+                                ((FragmentActivity) context)
+                                        .getSupportFragmentManager(),
+                                "EnableLocation"
+                        );
+            }
+
+            listener.onLocation(
+                    0.0,
+                    0.0,
+                    "Location disabled"
+            );
+            return;
+        }
+
         // Use CurrentLocationRequest for a fresh, high-accuracy fix (not stale cache)
         CurrentLocationRequest request = new CurrentLocationRequest.Builder()
                 .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
@@ -93,5 +118,18 @@ public class DeviceLocationHelper {
         if (locationCallback != null) {
             fusedLocationClient.removeLocationUpdates(locationCallback);
         }
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+
+        android.location.LocationManager locationManager =
+                (android.location.LocationManager)
+                        context.getSystemService(Context.LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(
+                android.location.LocationManager.GPS_PROVIDER
+        ) || locationManager.isProviderEnabled(
+                android.location.LocationManager.NETWORK_PROVIDER
+        );
     }
 }

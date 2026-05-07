@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -19,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +55,7 @@ public class CustomerSideTrackingFragment extends Fragment {
 
     private static final String REQUEST_ID = "request_id";
     private String requestId;
+    private String shopId;
     private String phoneToCall;
 
     private MapView mapView;
@@ -61,6 +64,11 @@ public class CustomerSideTrackingFragment extends Fragment {
     private TextView tvShopName;
     private TextView tvTotalPrice;
     private MaterialCardView callButton;
+
+    private TextView tvMechanicName;
+    private TextView tvRating;
+    private TextView tvServiceName;
+    private TextView tvServiceDescription;
 
     private double customerLat;
     private double customerLng;
@@ -74,9 +82,6 @@ public class CustomerSideTrackingFragment extends Fragment {
 
     private ViewModel viewModel;
     private boolean isDialogShown = false;
-
-    private Handler handler;
-    private Runnable runnable;
 
     private Socket socket;
 
@@ -121,15 +126,21 @@ public class CustomerSideTrackingFragment extends Fragment {
         tvDistance = view.findViewById(R.id.tvDistance);
         tvShopName = view.findViewById(R.id.tvShopName);
         tvTotalPrice = view.findViewById(R.id.tvTotalPrice);
+
+        tvMechanicName = view.findViewById(R.id.tvMechanicName);
+        tvRating = view.findViewById(R.id.tvRating);
+        tvServiceName = view.findViewById(R.id.tvServiceName);
+        tvServiceDescription = view.findViewById(R.id.tvServiceDescription);
+
         mapView = view.findViewById(R.id.map);
         callButton = view.findViewById(R.id.callButton);
+
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
         LoaderManager.show(this);
         viewModel.getServiceRequest(requestId);
         viewModelObserver();
 
-//        startPolling();
         initSocket();
 
         callButton.setOnClickListener(v -> {
@@ -142,8 +153,30 @@ public class CustomerSideTrackingFragment extends Fragment {
                 return;
             }
 
-            Intent intent = new Intent(Intent.ACTION_CALL);
-            intent.setData(Uri.parse("tel:" + phoneToCall));
+            if (
+                    phoneToCall == null
+                            ||
+                            phoneToCall.isEmpty()
+            ) {
+
+                Toast.makeText(
+                        requireContext(),
+                        "Phone number unavailable",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
+            Intent intent =
+                    new Intent(Intent.ACTION_CALL);
+
+            intent.setData(
+                    Uri.parse(
+                            "tel:" + phoneToCall
+                    )
+            );
+
             startActivity(intent);
         });
     }
@@ -166,12 +199,6 @@ public class CustomerSideTrackingFragment extends Fragment {
         mapView.onDetach();
     }
 
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-////        stopPolling();
-//    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -192,8 +219,30 @@ public class CustomerSideTrackingFragment extends Fragment {
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 // Permission granted → retry call
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + phoneToCall));
+                if (
+                        phoneToCall == null
+                                ||
+                                phoneToCall.isEmpty()
+                ) {
+
+                    Toast.makeText(
+                            requireContext(),
+                            "Phone number unavailable",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    return;
+                }
+
+                Intent intent =
+                        new Intent(Intent.ACTION_CALL);
+
+                intent.setData(
+                        Uri.parse(
+                                "tel:" + phoneToCall
+                        )
+                );
+
                 startActivity(intent);
 
             } else {
@@ -207,21 +256,132 @@ public class CustomerSideTrackingFragment extends Fragment {
             LoaderManager.handleResource(this, resource, serviceRequest -> {
                 if (serviceRequest == null) return;
 
+                shopId = serviceRequest.getShopId();
+
                 if ("waiting_for_confirmation".equalsIgnoreCase(serviceRequest.getStatus())) {
-                    if (!isDialogShown) {
-                        isDialogShown = true;
-                        ServiceCompletedFragment dialog =
-                                ServiceCompletedFragment.newInstance(requestId);
-                        dialog.setCancelable(false);
-                        dialog.show(getParentFragmentManager(), "ServiceCompletedDialog");
+                    if (shopId == null || shopId.isEmpty()) {
+
+                        viewModel.getServiceRequest(requestId);
+
+                        return;
                     }
+                    if (!isDialogShown) {
+
+                        isDialogShown = true;
+
+                        ServiceCompletedFragment dialog =
+                                ServiceCompletedFragment.newInstance(
+                                        requestId,
+                                        shopId
+                                );
+
+                        dialog.setCancelable(false);
+
+                        dialog.show(
+                                getParentFragmentManager(),
+                                "ServiceCompletedDialog"
+                        );
+                    }
+                }
+
+                if (
+                        serviceRequest.getMechanicName() != null
+                                &&
+                                !serviceRequest.getMechanicName().isEmpty()
+                ) {
+
+                    tvMechanicName.setText(
+                            "Mechanic • " +
+                                    serviceRequest.getMechanicName()
+                    );
+
+                } else {
+
+                    tvMechanicName.setText(
+                            "Mechanic Assigned"
+                    );
+                }
+
+                /*
+                 * SOS REQUEST
+                 */
+                if (serviceRequest.getIsSOS()) {
+
+                    tvServiceName.setText(
+                            "SOS Emergency Request"
+                    );
+
+                    tvServiceName.setTextColor(
+                            Color.parseColor("#FF3B30")
+                    );
+
+                    tvServiceDescription.setText(
+
+                            serviceRequest.getProblemDescription() != null
+
+                                    ? serviceRequest.getProblemDescription()
+
+                                    : "Emergency assistance required"
+                    );
+                }
+
+                /*
+                 * NORMAL REQUEST
+                 */
+                else {
+
+                    tvServiceName.setText(
+
+                            serviceRequest.getServiceName() != null
+
+                                    ? serviceRequest.getServiceName()
+
+                                    : "Vehicle Service"
+                    );
+
+                    tvServiceName.setTextColor(
+                            Color.parseColor("#1F1F1F")
+                    );
+
+                    tvServiceDescription.setText(
+
+                            serviceRequest.getServiceDescription() != null
+
+                                    ? serviceRequest.getServiceDescription()
+
+                                    : serviceRequest.getProblemDescription()
+                    );
+                }
+
+                if (serviceRequest.getShopRating() > 0) {
+
+                    tvRating.setText(
+                            String.format(
+                                    Locale.getDefault(),
+                                    "%.1f (%.1f Reviews)",
+                                    serviceRequest.getShopRating(),
+                                    serviceRequest.getShopRatingCount()
+                            )
+                    );
+
+                } else {
+
+                    tvRating.setText("New Shop");
                 }
 
                 if (serviceRequest.getShopName() != null) {
                     tvShopName.setText(serviceRequest.getShopName());
-                } else if (serviceRequest.getShopId() != null) {
-                    viewModel.fetchShopDetails(serviceRequest.getShopId());
                 }
+
+                tvShopName.setText(
+                        serviceRequest.getShopName()
+                );
+                phoneToCall =
+                        serviceRequest.getMechanicPhoneNumber();
+
+//                if (serviceRequest.getShopId() != null) {
+//                    viewModel.fetchShopDetails(serviceRequest.getShopId());
+//                }
 
                 tvTotalPrice.setText(String.format(Locale.getDefault(), "₹ %.2f", serviceRequest.getTotalPrice()));
 
@@ -257,14 +417,14 @@ public class CustomerSideTrackingFragment extends Fragment {
             });
         });
 
-        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), resource -> {
-            LoaderManager.handleResource(this, resource, shop -> {
-                if (shop != null) {
-                    tvShopName.setText(shop.getShopName());
-                    phoneToCall = shop.getPhoneNumber();
-                }
-            });
-        });
+//        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), resource -> {
+//            LoaderManager.handleResource(this, resource, shop -> {
+//                if (shop != null) {
+//                    tvShopName.setText(shop.getShopName());
+//                    phoneToCall = shop.getPhoneNumber();
+//                }
+//            });
+//        });
     }
 
 
@@ -383,7 +543,13 @@ public class CustomerSideTrackingFragment extends Fragment {
         double distanceKm = distance / 1000.0;
 
         tvDuration.setText(String.format(Locale.getDefault(), "%.0f mins", etaMin));
-        tvDistance.setText(String.format(Locale.getDefault(), "Mechanic is " + "%.2f km" + " away from you. He/She will be arrived within a min.", distanceKm));
+        tvDistance.setText(
+                String.format(
+                        Locale.getDefault(),
+                        "Mechanic is %.2f km away from your location.",
+                        distanceKm
+                )
+        );
     }
 
     private void zoomToFitRoute(GeoPoint start, GeoPoint end) {
@@ -398,33 +564,6 @@ public class CustomerSideTrackingFragment extends Fragment {
 
         mapView.zoomToBoundingBox(boundingBox, true, 150);
     }
-
-//    private void startPolling() {
-//        if (handler != null) return;
-//
-//        handler = new Handler(Looper.getMainLooper());
-//
-//        runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                if (requestId != null) {
-//                    viewModel.getServiceRequest(requestId); // 🔥 refresh API
-//                }
-//
-//                handler.postDelayed(this, 5000); // every 5 seconds
-//            }
-//        };
-//
-//        handler.post(runnable);
-//    }
-//
-//    private void stopPolling() {
-//        if (handler != null && runnable != null) {
-//            handler.removeCallbacks(runnable);
-//            handler = null;
-//        }
-//    }
 
     private void initSocket() {
         try {
@@ -454,20 +593,35 @@ public class CustomerSideTrackingFragment extends Fragment {
             });
 
             socket.on("order_status_update", args -> {
+                Log.d(
+                        "SOCKET_DEBUG",
+                        "Status Event Received"
+                );
 
                 JSONObject data = (JSONObject) args[0];
                 String status = data.optString("status");
+
+                Log.d(
+                        "SOCKET_DEBUG",
+                        data.toString()
+                );
 
                 if (getActivity() != null) {
                     getActivity().runOnUiThread(() -> {
 
                         if ("waiting_for_confirmation".equalsIgnoreCase(status)) {
+                            if (shopId == null || shopId.isEmpty()) {
+
+                                viewModel.getServiceRequest(requestId);
+
+                                return;
+                            }
 
                             if (!isDialogShown) {
                                 isDialogShown = true;
 
                                 ServiceCompletedFragment dialog =
-                                        ServiceCompletedFragment.newInstance(requestId);
+                                        ServiceCompletedFragment.newInstance(requestId, shopId);
 
                                 dialog.setCancelable(false);
                                 dialog.show(getParentFragmentManager(), "ServiceCompletedDialog");

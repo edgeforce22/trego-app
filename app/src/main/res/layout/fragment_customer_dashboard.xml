@@ -51,139 +51,355 @@
         </com.google.android.material.card.MaterialCardView>
 
         <!-- Live Request Card (Top Most) -->
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:id="@+id/liveRequestCard"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="24dp"-->
+<!--            app:cardBackgroundColor="#FFF8E1"-->
+<!--            app:cardCornerRadius="24dp"-->
+<!--            app:cardElevation="1dp"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/profileBtn"-->
+<!--            app:strokeColor="#FFD54F"-->
+<!--            app:strokeWidth="0.5dp">-->
+
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:paddingTop="20dp"-->
+<!--                android:paddingHorizontal="20dp"-->
+<!--                android:paddingBottom="10dp">-->
+
+<!--                <com.airbnb.lottie.LottieAnimationView-->
+<!--                    android:id="@+id/liveAnimation"-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    app:lottie_autoPlay="true"-->
+<!--                    app:lottie_loop="true"-->
+<!--                    app:lottie_rawRes="@raw/live"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"  />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvLiveReqShopName"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:maxLines="1"-->
+<!--                    android:layout_marginStart="5dp"-->
+<!--                    android:text="Shop Name"-->
+<!--                    android:textColor="#5D4037"-->
+<!--                    android:textSize="18sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    app:layout_constraintEnd_toStartOf="@+id/tvLiveReqStatus"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/liveAnimation"-->
+<!--                    app:layout_constraintTop_toTopOf="@+id/liveAnimation"-->
+<!--                    app:layout_constraintBottom_toBottomOf="@+id/liveAnimation"/>-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvLiveReqStatus"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@drawable/status_pending_bg"-->
+<!--                    android:paddingHorizontal="10dp"-->
+<!--                    android:paddingVertical="4dp"-->
+<!--                    android:text="Pending"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textSize="11sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/tvLiveReqShopName"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="@id/tvLiveReqShopName" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvLiveReqService"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:maxWidth="250dp"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:maxLines="3"-->
+<!--                    android:text="Service Name"-->
+<!--                    android:textColor="#795548"-->
+<!--                    android:textSize="14sp"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/tvLiveReqShopName" />-->
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvLiveReqTime"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:layout_marginRight="5dp"-->
+<!--                    android:text="12 Mar 2025 01:10 PM"-->
+<!--                    android:textColor="#795548"-->
+<!--                    android:textSize="8sp"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toBottomOf="@id/tvLiveReqStatus" />-->
+
+<!--                &lt;!&ndash; Perfectly Matched Buttons for Cream/Gold Card &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    app:layout_constraintTop_toBottomOf="@+id/tvLiveReqService"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--                    &lt;!&ndash; Cancel Button &ndash;&gt;-->
+<!--                    <com.google.android.material.button.MaterialButton-->
+<!--                        android:id="@+id/btnCancelRequest"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="52dp"-->
+<!--                        android:layout_marginEnd="8dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:backgroundTint="#FFF3E0"-->
+<!--                        android:text="Cancel Request"-->
+<!--                        android:textSize="11dp"-->
+<!--                        android:textColor="#8D6E63"-->
+<!--                        android:textStyle="bold"-->
+<!--                        app:cornerRadius="18dp"-->
+<!--                        app:elevation="0dp"-->
+<!--                        app:rippleColor="#20A1887F"-->
+<!--                        app:strokeColor="#D7CCC8"-->
+<!--                        app:strokeWidth="1dp" />-->
+
+<!--                    &lt;!&ndash; Track Button &ndash;&gt;-->
+<!--                    <com.google.android.material.button.MaterialButton-->
+<!--                        android:id="@+id/btnTrack"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="52dp"-->
+<!--                        android:layout_marginStart="8dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:backgroundTint="#6D4C41"-->
+<!--                        android:text="Track Request"-->
+<!--                        android:textSize="11dp"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textStyle="bold"-->
+<!--                        app:cornerRadius="18dp"-->
+<!--                        app:elevation="4dp"-->
+<!--                        app:rippleColor="#30FFFFFF" />-->
+
+<!--                </LinearLayout>-->
+
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--        </com.google.android.material.card.MaterialCardView>-->
+
+        <!-- Live Request Card -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/liveRequestCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:cardBackgroundColor="#FFF8E1"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="1dp"
+            app:cardBackgroundColor="#FFFDF4"
+            app:cardCornerRadius="30dp"
+            app:cardElevation="0dp"
             app:layout_constraintTop_toBottomOf="@id/profileBtn"
-            app:strokeColor="#FFD54F"
-            app:strokeWidth="0.5dp">
+            app:strokeColor="#F4D84E"
+            app:strokeWidth="1dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="20dp"
-                android:paddingHorizontal="20dp"
-                android:paddingBottom="10dp">
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <com.airbnb.lottie.LottieAnimationView
-                    android:id="@+id/liveAnimation"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    app:lottie_autoPlay="true"
-                    app:lottie_loop="true"
-                    app:lottie_rawRes="@raw/live"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"  />
-
-                <TextView
-                    android:id="@+id/tvLiveReqShopName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:layout_marginStart="5dp"
-                    android:text="Shop Name"
-                    android:textColor="#5D4037"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@+id/tvLiveReqStatus"
-                    app:layout_constraintStart_toEndOf="@+id/liveAnimation"
-                    app:layout_constraintTop_toTopOf="@+id/liveAnimation"
-                    app:layout_constraintBottom_toBottomOf="@+id/liveAnimation"/>
-
-                <TextView
-                    android:id="@+id/tvLiveReqStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/status_pending_bg"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp"
-                    android:text="Pending"
-                    android:textColor="@color/white"
-                    android:textSize="11sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toEndOf="@+id/tvLiveReqShopName"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/tvLiveReqShopName" />
-
-                <TextView
-                    android:id="@+id/tvLiveReqService"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:maxWidth="250dp"
-                    android:ellipsize="end"
-                    android:maxLines="3"
-                    android:text="Service Name"
-                    android:textColor="#795548"
-                    android:textSize="14sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvLiveReqShopName" />
-
-                <TextView
-                    android:id="@+id/tvLiveReqTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginRight="5dp"
-                    android:text="12 Mar 2025 01:10 PM"
-                    android:textColor="#795548"
-                    android:textSize="8sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvLiveReqStatus" />
-
-                <!-- Perfectly Matched Buttons for Cream/Gold Card -->
+                <!-- Top Row -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/tvLiveReqService"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <!-- Cancel Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnCancelRequest"
-                        android:layout_width="0dp"
-                        android:layout_height="52dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="#FFF3E0"
-                        android:text="Cancel Request"
-                        android:textSize="11dp"
-                        android:textColor="#8D6E63"
-                        android:textStyle="bold"
-                        app:cornerRadius="18dp"
-                        app:elevation="0dp"
-                        app:rippleColor="#20A1887F"
-                        app:strokeColor="#D7CCC8"
-                        app:strokeWidth="1dp" />
+                    <!-- Live Animation -->
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/liveAnimation"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
+                        app:lottie_rawRes="@raw/live" />
 
-                    <!-- Track Button -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnTrack"
+                    <!-- Shop + Mechanic -->
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="52dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
                         android:layout_weight="1"
-                        android:backgroundTint="#6D4C41"
-                        android:text="Track Request"
-                        android:textSize="11dp"
-                        android:textColor="#FFFFFF"
-                        android:textStyle="bold"
-                        app:cornerRadius="18dp"
-                        app:elevation="4dp"
-                        app:rippleColor="#30FFFFFF" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvLiveReqShopName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:text="Trego Workshop"
+                            android:textColor="#2B2B2B"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvMechanicName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Mechanic: Vignesh"
+                            android:textColor="#7A7A7A"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                    <!-- Status -->
+                    <TextView
+                        android:id="@+id/tvLiveReqStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/status_pending_bg"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
+                        android:text="Accepted"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Service Container -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="#F7F7F7"
+                    app:cardCornerRadius="18dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <!-- Service Name -->
+                        <TextView
+                            android:id="@+id/tvLiveReqService"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Oil Change Service"
+                            android:textColor="#A67C00"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <!-- Description -->
+                        <TextView
+                            android:id="@+id/tvServiceDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:maxLines="3"
+                            android:ellipsize="end"
+                            android:text="Complete engine oil replacement and cleaning service for your vehicle."
+                            android:textColor="#6F6F6F"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Problem Description -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    app:cardBackgroundColor="#FFF8DC"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
+
+                    <TextView
+                        android:id="@+id/tvProblemDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="14dp"
+                        android:text="Problem: Bike not starting properly."
+                        android:textColor="#6B6B6B"
+                        android:textSize="11sp" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Bottom Info Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvLiveReqTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="12 Mar 2026 • 01:10 PM"
+                        android:textColor="#8A8A8A"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/tvLiveReqPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹499"
+                        android:textColor="#2E7D32"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:orientation="horizontal">
+
+                    <!-- Cancel -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCancelRequest"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:text="Cancel"
+                        android:textAllCaps="false"
+                        android:textColor="#7B5E57"
+                        android:textStyle="bold"
+                        app:backgroundTint="#F5ECE7"
+                        app:cornerRadius="18dp"
+                        app:elevation="0dp"
+                        app:strokeColor="#E2D3CC"
+                        app:strokeWidth="1dp" />
+
+                    <!-- Track -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnTrack"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="Track"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/primary_color"
+                        app:cornerRadius="18dp"
+                        app:elevation="0dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 

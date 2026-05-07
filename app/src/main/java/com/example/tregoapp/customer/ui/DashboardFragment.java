@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -73,6 +74,11 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
     private TextView tvLiveReqShopName;
     private TextView tvLiveReqService;
     private TextView tvLiveReqTime;
+
+    private TextView tvMechanicName;
+    private TextView tvServiceDescription;
+    private TextView tvProblemDescription;
+    private TextView tvLiveReqPrice;
     private View btnCancelRequest;
     private View btnTrack;
 
@@ -108,6 +114,10 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
         goToNearbyShops = view.findViewById(R.id.goToNearbyShops);
         goToSOS = view.findViewById(R.id.goToSOS);
         shopsRecyclerView = view.findViewById(R.id.shopsRecyclerView);
+        tvMechanicName = view.findViewById(R.id.tvMechanicName);
+        tvServiceDescription = view.findViewById(R.id.tvServiceDescription);
+        tvProblemDescription = view.findViewById(R.id.tvProblemDescription);
+        tvLiveReqPrice = view.findViewById(R.id.tvLiveReqPrice);
         card = view.findViewById(R.id.cardLiveAddress);
 
         liveRequestCard = view.findViewById(R.id.liveRequestCard);
@@ -409,8 +419,128 @@ public class DashboardFragment extends Fragment implements OnItemClickListener {
                     } else if (activeRequest.getShopId() != null) {
                         viewModel.fetchShopDetails(activeRequest.getShopId());
                     }
-                    tvLiveReqService.setText(activeRequest.getServiceName() != null ? activeRequest.getServiceName() : "Service Request");
                     tvLiveReqTime.setText(Utility.getInstance().formatDate2(activeRequest.getCreatedAt()));
+
+                    /*
+                     * MECHANIC NAME
+                     */
+                    tvMechanicName.setText(
+
+                            activeRequest.getMechanicName() != null
+
+                                    ? "Mechanic: " + activeRequest.getMechanicName()
+
+                                    : "Mechanic Assigned"
+                    );
+
+                    /*
+                     * SOS REQUEST
+                     */
+                    /*
+                     * SOS REQUEST
+                     */
+                    if (activeRequest.getIsSOS()) {
+
+                        /*
+                         * SERVICE NAME
+                         */
+                        tvLiveReqService.setText(
+                                "SOS Service"
+                        );
+
+                        tvLiveReqService.setTextColor(
+                                Color.parseColor("#FF3B30")
+                        );
+
+                        /*
+                         * DESCRIPTION
+                         */
+                        String problemDescription =
+
+                                activeRequest.getProblemDescription();
+
+                        if (
+                                problemDescription == null
+                                        ||
+                                        problemDescription.trim().isEmpty()
+                        ) {
+
+                            problemDescription =
+                                    "Emergency assistance required";
+                        }
+
+                        tvServiceDescription.setText(
+                                problemDescription
+                        );
+
+                        /*
+                         * HIDE EXTRA PROBLEM CARD
+                         */
+                        tvProblemDescription.setVisibility(
+                                View.GONE
+                        );
+                    }
+
+                    /*
+                     * NORMAL REQUEST
+                     */
+                    else {
+
+                        String serviceName =
+                                activeRequest.getServiceName();
+
+                        String serviceDescription =
+                                activeRequest.getServiceDescription();
+
+                        tvLiveReqService.setText(
+
+                                serviceName != null
+                                        &&
+                                        !serviceName.trim().isEmpty()
+
+                                        ? serviceName
+
+                                        : "Vehicle Service"
+                        );
+
+                        tvLiveReqService.setTextColor(
+                                Color.parseColor("#1F1F1F")
+                        );
+
+                        tvServiceDescription.setText(
+
+                                serviceDescription != null
+                                        &&
+                                        !serviceDescription.trim().isEmpty()
+
+                                        ? serviceDescription
+
+                                        : "No description available"
+                        );
+
+                        tvProblemDescription.setVisibility(
+                                View.VISIBLE
+                        );
+
+                        tvProblemDescription.setText(
+
+                                "Problem: " +
+
+                                        (
+                                                activeRequest.getProblemDescription() != null
+                                                        &&
+                                                        !activeRequest.getProblemDescription().trim().isEmpty()
+
+                                                        ? activeRequest.getProblemDescription()
+
+                                                        : "-"
+                                        )
+                        );
+                    }
+
+                    tvLiveReqPrice.setText(
+                            "₹" + activeRequest.getTotalPrice()
+                    );
                     
                     if (isTrackable) {
                         if ("requested".equalsIgnoreCase(activeRequest.getStatus())) {

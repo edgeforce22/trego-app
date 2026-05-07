@@ -1,5 +1,6 @@
 package com.example.tregoapp.mechanic.ui;
 
+import android.app.Service;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.ClipData;
@@ -15,18 +16,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+
+import com.bumptech.glide.Glide;
 import com.example.tregoapp.R;
 import com.example.tregoapp.WelcomeFragment;
+import com.example.tregoapp.mechanic.bottomsheet.ServicesListBottomSheetFragment;
+import com.example.tregoapp.mechanic.model.ServiceDetail;
+import com.example.tregoapp.mechanic.model.ShopDetail;
+import com.example.tregoapp.mechanic.model.response.User;
 import com.example.tregoapp.mechanic.utils.LoaderManager;
 import com.example.tregoapp.mechanic.utils.LoadFragment;
 import com.example.tregoapp.mechanic.viewmodel.ViewModel;
 
+import java.util.List;
+
 public class ProfileFragment extends Fragment {
 
+    private String mechanicId;
     private String shopId;
     private ImageView backBtn, copyShopIdBtn;
     private LinearLayout logoutBtn;
@@ -36,9 +47,19 @@ public class ProfileFragment extends Fragment {
     private TextView tvAddress;
     private TextView tvShopName;
     private TextView tvShopId;
-    private LinearLayout goToCreateService;
+    private LinearLayout goToRegisterShop;
+    private LinearLayout goToServicesList;
+    private ImageView ivGoToRegisterShopArrow;
+    private ImageView shopImage;
+    private RatingBar ratingBar;
+    private TextView tvRatingCount;
+
 
     private ViewModel viewModel;
+
+    private User currentUser;
+    private ShopDetail shopDetail;
+    private List<ServiceDetail> serviceDetailList;
 
 
     @Override
@@ -58,8 +79,16 @@ public class ProfileFragment extends Fragment {
         tvAddress = view.findViewById(R.id.tvAddress);
         tvShopName = view.findViewById(R.id.tvShopName);
         tvShopId = view.findViewById(R.id.tvShopId);
-        goToCreateService = view.findViewById(R.id.goToCreateService);
+        goToServicesList = view.findViewById(R.id.goToServicesList);
         copyShopIdBtn = view.findViewById(R.id.copyShopIdBtn);
+        goToRegisterShop = view.findViewById(R.id.goToRegisterShop);
+        ivGoToRegisterShopArrow = view.findViewById(R.id.ivGoToRegisterShopArrow);
+        shopImage = view.findViewById(R.id.shopImage);
+        tvRatingCount = view.findViewById(R.id.tvRatingCount);
+        ratingBar =
+                view.findViewById(
+                        R.id.ratingBar
+                );
 
         // Reset text to avoid showing hardcoded XML values during loading
         tvName.setText("...");
@@ -72,9 +101,41 @@ public class ProfileFragment extends Fragment {
         LoadFragment.replaceChildFragment(this, R.id.dashboardBottomContainer, new OwnerBottomNavigationFragment());
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
-        LoaderManager.show(this);
-        viewModel.loadSavedUser();
         viewModelObserver();
+        LoaderManager.show(this);
+
+        /*
+         * GET USER ID
+         */
+        mechanicId =
+                viewModel.getUserId();
+
+        /*
+         * VALIDATION
+         */
+        if (
+                mechanicId == null
+                        ||
+                        mechanicId.isEmpty()
+        ) {
+
+            LoaderManager.hide(this);
+
+            Toast.makeText(
+                    requireContext(),
+                    "Mechanic ID not found",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        /*
+         * API CALL
+         */
+        viewModel.mechanicCompleteDetails(
+                mechanicId
+        );
 
         backBtn.setOnClickListener(v -> {
             if (getParentFragmentManager().getBackStackEntryCount() > 0) {
@@ -82,7 +143,25 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        goToCreateService.setOnClickListener(v -> {
+        goToRegisterShop.setOnClickListener(v -> {
+            mechanicId = viewModel.getUserId();
+
+            if (mechanicId == null || mechanicId.isEmpty()) {
+                Toast.makeText(requireContext(),
+                        "User Id is null",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ShopRegistrationFragment shopRegistrationFragment = ShopRegistrationFragment.newInstance(mechanicId);
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, shopRegistrationFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
+        goToServicesList.setOnClickListener(v -> {
             shopId = viewModel.getShopId();
 
             if (shopId == null || shopId.isEmpty()) {
@@ -92,12 +171,8 @@ public class ProfileFragment extends Fragment {
                 return;
             }
 
-            CreateServiceFragment createServiceFragment = CreateServiceFragment.newInstance(shopId);
-            getParentFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, createServiceFragment)
-                    .addToBackStack(null)
-                    .commit();
+            ServicesListBottomSheetFragment servicesListBottomSheetFragment = ServicesListBottomSheetFragment.newInstance(serviceDetailList, shopId);
+            servicesListBottomSheetFragment.show(getParentFragmentManager(), "ServiceListBottomSheet");
         });
 
         logoutBtn.setOnClickListener(v -> {
@@ -131,10 +206,71 @@ public class ProfileFragment extends Fragment {
     }
 
     private void viewModelObserver() {
-        viewModel.getCurrentUser().observe(getViewLifecycleOwner(), currentUser -> {
-            if (currentUser == null) {
+        viewModel.getAuthState().observe(getViewLifecycleOwner(), authState -> {
+            if (authState != null && !authState.getSuccess()) {
+                LoaderManager.hide(this);
+                // Toast.makeText(requireContext(), authState.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopResource -> {
+            if (shopResource == null) return;
+            switch (shopResource.status) {
+                case LOADING:
+                    LoaderManager.show(this);
+                    break;
+                case SUCCESS:
+                    LoaderManager.hide(this);
+                    if (shopResource.data != null) {
+                        tvShopName.setText(shopResource.data.getShopName());
+                    }
+                    break;
+                case ERROR:
+                    LoaderManager.hide(this);
+                    tvShopName.setText("Error loading shop");
+                    // Toast.makeText(requireContext(), "Error fetching shop details: " + shopResource.message, Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        });
+
+        viewModel.getCurrentMechanicDetails().observe(getViewLifecycleOwner(), details -> {
+            if (details == null) {
+
+                LoaderManager.hide(this);
+
                 return;
             }
+
+            LoaderManager.hide(this);
+
+            currentUser =
+                    details.getMechanicDetails();
+
+            shopDetail =
+                    details.getShopDetail();
+
+            serviceDetailList =
+                    details.getServiceDetail();
+
+            /*
+             * NULL CHECK
+             */
+            if (currentUser == null) {
+
+                LoaderManager.hide(this);
+
+                Toast.makeText(
+                        requireContext(),
+                        "Failed to load mechanic details",
+                        Toast.LENGTH_SHORT
+                ).show();
+
+                return;
+            }
+
+            mechanicId =
+                    currentUser.getId();
+
 
             tvName.setText(currentUser.getName());
             String phone = currentUser.getPhoneNumber();
@@ -156,38 +292,66 @@ public class ProfileFragment extends Fragment {
             if (shopId != null && !shopId.isEmpty()) {
                 tvShopId.setText(shopId);
 
-                // Try to load from local storage first
-                com.example.tregoapp.mechanic.model.ShopDetail savedShop = viewModel.getSavedShopDetails();
-                if (savedShop != null && shopId.equals(savedShop.getShopId())) {
-                    tvShopName.setText(savedShop.getShopName());
-                    LoaderManager.hide(this);
+                if (shopDetail != null) {
+
+                    tvShopName.setText(
+                            shopDetail.getShopName()
+                    );
+
+                    Double rating =
+                            shopDetail.getRating();
+
+                    ratingBar.setRating(
+
+                            rating != null
+
+                                    ? rating.floatValue()
+
+                                    : 0f
+                    );
+
+                    Integer ratingCount =
+                            shopDetail.getRatingCount();
+
+                    tvRatingCount.setText(
+
+                            "(" +
+
+                                    (ratingCount != null
+                                            ? ratingCount
+                                            : 0)
+
+                                    + ")"
+                    );
+
                 } else {
-                    viewModel.fetchShopDetails(shopId);
+
+                    tvShopName.setText(
+                            "Not Registered"
+                    );
                 }
+
+                String profileImage = shopDetail.getShopImage();
+
+                if (profileImage != null && !profileImage.isEmpty()) {
+
+                    Glide.with(requireContext())
+                            .load(profileImage)
+                            .placeholder(R.drawable.profile)
+                            .error(R.drawable.profile)
+                            .into(shopImage);
+                }
+
+                goToRegisterShop.setClickable(false);
+                goToRegisterShop.setFocusable(false);
+                ivGoToRegisterShopArrow.setVisibility(View.GONE);
             } else {
+                goToRegisterShop.setClickable(true);
+                goToRegisterShop.setFocusable(true);
+                ivGoToRegisterShopArrow.setVisibility(View.VISIBLE);
                 tvShopName.setText("Not Registered");
                 tvShopId.setText("Not Registered");
                 LoaderManager.hide(this);
-            }
-        });
-
-        viewModel.getShopDetailsLiveData().observe(getViewLifecycleOwner(), shopResource -> {
-            if (shopResource == null) return;
-            switch (shopResource.status) {
-                case LOADING:
-                    LoaderManager.show(this);
-                    break;
-                case SUCCESS:
-                    LoaderManager.hide(this);
-                    if (shopResource.data != null) {
-                        tvShopName.setText(shopResource.data.getShopName());
-                    }
-                    break;
-                case ERROR:
-                    LoaderManager.hide(this);
-                    tvShopName.setText("Error loading shop");
-                    // Toast.makeText(requireContext(), "Error fetching shop details: " + shopResource.message, Toast.LENGTH_SHORT).show();
-                    break;
             }
         });
     }

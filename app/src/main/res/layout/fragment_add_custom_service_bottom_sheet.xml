@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#FAFAFA"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".mechanic.bottomsheet.AddCustomServiceBottomSheetFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Custom Service"
+        android:textColor="#111111"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <!-- Service Name -->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:hintEnabled="false"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="#F8F8F8"
+        app:boxStrokeWidth="0dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etServiceName"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@null"
+            android:hint="Service name"
+            android:paddingHorizontal="16dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Description -->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        app:hintEnabled="false"
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="#F8F8F8"
+        app:boxStrokeWidth="0dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etDescription"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="Description"
+            android:padding="16dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Price -->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        app:hintEnabled="false"
+        app:prefixText="₹ "
+        app:boxBackgroundMode="filled"
+        app:boxBackgroundColor="#F8F8F8"
+        app:boxStrokeWidth="0dp"
+        app:boxCornerRadiusTopStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusBottomEnd="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@null"
+            android:hint="Price"
+            android:inputType="numberDecimal"
+            android:paddingHorizontal="16dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAddService"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="22dp"
+        android:text="Add Service"
+        android:textAllCaps="false"
+        android:textColor="#111111"
+        android:textStyle="bold"
+        app:backgroundTint="#FFE429"
+        app:cornerRadius="18dp"
+        app:elevation="0dp" />
+
+</LinearLayout>

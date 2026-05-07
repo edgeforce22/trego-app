@@ -1,7 +1,9 @@
 package com.example.tregoapp.mechanic.api;
 
 import com.example.tregoapp.mechanic.model.CancelRequestById;
+import com.example.tregoapp.mechanic.model.CreateServicesRequest;
 import com.example.tregoapp.mechanic.model.GetRequestByTwoId;
+import com.example.tregoapp.mechanic.model.MechanicDetails;
 import com.example.tregoapp.mechanic.model.map.RouteResponse;
 import com.example.tregoapp.mechanic.model.AcceptServiceRequest;
 import com.example.tregoapp.mechanic.model.FCMTokenRequest;
@@ -18,11 +20,15 @@ import com.example.tregoapp.mechanic.model.response.User;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -39,9 +45,40 @@ public interface ApiService {
             @Body Login request
     );
 
+    @POST("mechanic/auth/getCompleteMechanicData")
+    Call<ApiResponse<MechanicDetails>> mechanicCompleteDetails(
+            @Body GetRequestById request
+    );
+
+
+//    @POST("mechanic/auth/registerShop")
+//    Call<ApiResponse<RegisterShopResponse>> registerShop(
+//            @Body ShopDetail shopDetail
+//    );
+
+    @Multipart
     @POST("mechanic/auth/registerShop")
     Call<ApiResponse<RegisterShopResponse>> registerShop(
-            @Body ShopDetail shopDetail
+
+            @Part MultipartBody.Part shopImage,
+
+            @Part("ownerId") RequestBody ownerId,
+
+            @Part("shopName") RequestBody shopName,
+
+            @Part("phoneNumber") RequestBody phoneNumber,
+
+            @Part("address") RequestBody address,
+
+            @Part("latitude") RequestBody latitude,
+
+            @Part("longitude") RequestBody longitude,
+
+            @Part("openingTime") RequestBody openingTime,
+
+            @Part("closingTime") RequestBody closingTime,
+
+            @Part("supportedVehicles") RequestBody supportedVehicles
     );
 
     @POST("mechanic/auth/workerShopRegister")
@@ -50,9 +87,13 @@ public interface ApiService {
     );
 
     @POST("mechanic/auth/createService")
-    Call<ApiResponse<ServiceDetail>> createService(
-            @Body ServiceDetail serviceDetail
+    Call<ApiResponse<Object>> createService(
+            @Body CreateServicesRequest request
     );
+//    @POST("mechanic/auth/createService")
+//    Call<ApiResponse<ServiceDetail>> createService(
+//            @Body ServiceDetail serviceDetail
+//    );
 
     @POST("mechanic/auth/updateStatus")
     Call<ApiResponse<User>> updateStatus(

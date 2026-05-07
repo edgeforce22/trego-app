@@ -104,7 +104,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginBottom="14dp">
+            android:layout_marginBottom="5dp">
 
             <ImageView
                 android:layout_width="16dp"
@@ -125,6 +125,47 @@
                 android:ellipsize="end" />
 
         </LinearLayout>
+
+        <!-- Problem Description -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="18dp"
+            android:layout_marginBottom="5dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="#F3F3F3">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Problem: "
+                    android:textColor="#6B6B6B"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:maxLines="3"
+                    android:lineSpacingExtra="1dp"/>
+
+                <TextView
+                    android:id="@+id/tvProblemDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Engine making unusual noise while starting"
+                    android:textColor="#6B6B6B"
+                    android:textSize="11sp"
+                    android:maxLines="3"
+                    android:lineSpacingExtra="1dp"/>
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
 
         <!-- Bottom Stats -->
         <LinearLayout

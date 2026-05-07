@@ -1,122 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="28dp"
-    app:strokeColor="#ECEFF3"
-    app:strokeWidth="1dp">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FAFAFA"
+    android:paddingHorizontal="20dp"
+    android:paddingTop="18dp"
+    android:paddingBottom="14dp"
+    tools:context=".mechanic.ui.CreateServiceFragment">
 
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_first_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/tertiary_color" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_last_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/primary_color"
+            android:paddingStart="2dp" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="28dp" />
+
+    <!-- Title -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:src="@drawable/shop"
-            android:scaleType="centerCrop"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create New"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#8B8B8B" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="18dp">
+            android:layout_marginTop="3dp"
+            android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/tvShopName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shop Name"
-                android:textSize="22sp"
+                android:text="@string/service"
+                android:textSize="26sp"
                 android:textStyle="bold"
-                android:textColor="#111111"/>
+                android:textColor="#111111" />
 
-            <TextView
-                android:id="@+id/tvAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="Address"
-                android:textSize="13sp"
-                android:textColor="#777777"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvRating"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="4.8"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/tvDistance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="2.1 km"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/tvDuration"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="12 min"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="16dp"
-                android:background="#F1F1F1"/>
-
-            <TextView
-                android:id="@+id/tvPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="9876543210"
-                android:textSize="14sp"
-                android:textColor="#111111"/>
-
-            <TextView
-                android:id="@+id/tvOpen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="09:00 AM"/>
-
-            <TextView
-                android:id="@+id/tvClose"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="08:00 PM"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnClose"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="18dp"
-                android:text="Close"
-                android:textColor="#111111"
-                app:backgroundTint="#FFE429"
-                app:cornerRadius="14dp"/>
+            <!--            <View-->
+            <!--                android:layout_width="8dp"-->
+            <!--                android:layout_height="8dp"-->
+            <!--                android:layout_marginStart="6dp"-->
+            <!--                android:background="#FFE429" />-->
 
         </LinearLayout>
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="18dp" />
+
+    <!-- Form Card -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="24dp"
+        app:strokeColor="#ECECEC"
+        app:strokeWidth="1dp"
+        app:cardElevation="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="10dp"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <!-- Scrollable Fields -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:overScrollMode="never">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Select Services -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Services"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="#777777"
+                        android:layout_marginBottom="8dp" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/selectServiceLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardBackgroundColor="#F8F8F8"
+                        app:cardCornerRadius="18dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#ECECEC"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tvSelectedServiceCount"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Select predefined services"
+                                    android:textColor="#111111"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvSelectedServices"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="3dp"
+                                    android:text="Oil Change, Puncture..."
+                                    android:textColor="#777777"
+                                    android:textSize="12sp"
+                                    android:maxLines="2"
+                                    android:ellipsize="end" />
+
+                            </LinearLayout>
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/right_arrow"
+                                app:tint="#777777"/>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Selected Services Container -->
+                    <LinearLayout
+                        android:id="@+id/layoutSelectedServices"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <!-- Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/createServiceBtn"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="16dp"
+                android:text="Create Service"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#111111"
+                app:backgroundTint="#FFE429"
+                app:cornerRadius="18dp"
+                app:elevation="0dp" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

@@ -19,6 +19,12 @@ public class ServiceDetail {
         this.price = price;
     }
 
+    public ServiceDetail(String service, String description, double price) {
+        this.service = service;
+        this.description = description;
+        this.price = price;
+    }
+
     public String getServiceId() {
         return serviceId;
     }

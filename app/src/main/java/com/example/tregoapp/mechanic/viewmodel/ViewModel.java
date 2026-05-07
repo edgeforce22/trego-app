@@ -6,7 +6,9 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.tregoapp.mechanic.model.CancelRequestById;
+import com.example.tregoapp.mechanic.model.CreateServicesRequest;
 import com.example.tregoapp.mechanic.model.GetRequestByTwoId;
+import com.example.tregoapp.mechanic.model.MechanicDetails;
 import com.example.tregoapp.mechanic.model.map.Route;
 import com.example.tregoapp.mechanic.model.Location;
 import com.example.tregoapp.mechanic.model.AcceptServiceRequest;
@@ -33,6 +35,7 @@ import kotlinx.coroutines.Job;
 public class ViewModel extends AndroidViewModel {
     private MutableLiveData<AuthState> authState = new MutableLiveData<>();
     private MutableLiveData<User> currentUser = new MutableLiveData<>();
+    private MutableLiveData<MechanicDetails> currentMechanicDetails = new MutableLiveData<>();
     private MutableLiveData<ShopDetail> shopDetail = new MutableLiveData<>();
     private MutableLiveData<List<ServiceRequest>> shopServiceRequestsLiveData = new MutableLiveData<>();
     private MutableLiveData<List<ServiceRequest>> activeServiceRequestsLiveData = new MutableLiveData<>();
@@ -96,6 +99,10 @@ public class ViewModel extends AndroidViewModel {
         return workersListLiveData;
     }
 
+    public MutableLiveData<MechanicDetails> getCurrentMechanicDetails() {
+        return currentMechanicDetails;
+    }
+
     public void login(String phoneNumber, String password) {
         LoginUser = new Login(phoneNumber, password);
         repository.mechanicLogin(LoginUser, authState, currentUser);
@@ -106,15 +113,36 @@ public class ViewModel extends AndroidViewModel {
         repository.mechanicRegister(RegisterUser, authState, currentUser);
     }
 
-    public void registerShop(String ownerId, String shopName, String shopContactNumber, String address, double latitude, double longitude, String shopOpeningTime, String shopClosingTime) {
-        ShopDetail shop = new ShopDetail(ownerId, shopName, shopContactNumber, address, latitude, longitude, shopOpeningTime, shopClosingTime);
-        repository.registerShop(shop, shopDetail, currentUser, authState);
+    public void mechanicCompleteDetails(String id) {
+        GetRequestById request = new GetRequestById(id);
+        repository.mechanicCompleteDetails(request, authState, currentMechanicDetails);
     }
 
-    public void createService(String shopId, String service, String serviceDescription, double servicePrice) {
-        ServiceDetail serviceDetail = new ServiceDetail(shopId, service, serviceDescription, servicePrice);
-        repository.createService(serviceDetail, authState);
+    public void registerShop(String imagePath, String ownerId, String shopName, String shopContactNumber, String address, double latitude, double longitude, String shopOpeningTime, String shopClosingTime, List<String> supportedVehicles) {
+        ShopDetail shop = new ShopDetail(ownerId, shopName, shopContactNumber, address, latitude, longitude, shopOpeningTime, shopClosingTime, supportedVehicles);
+        repository.registerShop(imagePath, shop, shopDetail, currentUser, authState);
     }
+
+    public void createService(
+            String shopId,
+            List<ServiceDetail> services
+    ) {
+
+        CreateServicesRequest request =
+                new CreateServicesRequest(
+                        shopId,
+                        services
+                );
+
+        repository.createService(
+                request,
+                authState
+        );
+    }
+//    public void createService(String shopId, String service, String serviceDescription, double servicePrice) {
+//        ServiceDetail serviceDetail = new ServiceDetail(shopId, service, serviceDescription, servicePrice);
+//        repository.createService(serviceDetail, authState);
+//    }
 
     public void updateStatus(String mechanicId, String status) {
         StatusUpdate statusUpdate = new StatusUpdate(mechanicId, status);

@@ -1,6 +1,7 @@
 package com.example.tregoapp.customer.viewmodel;
 
 import android.app.Application;
+import android.net.Uri;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
@@ -8,6 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 //import com.example.tregoapp.customer.model.CreateRequest;
 import com.example.tregoapp.customer.model.GetRequestById;
 import com.example.tregoapp.customer.model.Location;
+import com.example.tregoapp.customer.model.RateShopRequest;
 import com.example.tregoapp.customer.model.SOSRequest;
 import com.example.tregoapp.customer.model.ServiceDetail;
 import com.example.tregoapp.customer.model.ServiceRequest;
@@ -44,12 +46,17 @@ public class ViewModel extends AndroidViewModel {
     private MutableLiveData<Resource<User>> mechanicDetails = new MutableLiveData<>();
     private MutableLiveData<Resource<ShopDetail>> shopDetails = new MutableLiveData<>();
     private MutableLiveData<Resource<ServiceDetail>> serviceDetails = new MutableLiveData<>();
+    private final MutableLiveData<Resource<Object>> rateShopResource = new MutableLiveData<>();
 
     private Repository repository;
 
     public ViewModel(@NonNull Application application) {
         super(application);
         this.repository = new Repository(application.getApplicationContext());
+    }
+
+    public MutableLiveData<Resource<Object>> getRateShopResource() {
+        return rateShopResource;
     }
 
     public MutableLiveData<Resource<User>> getAuthResource() {
@@ -129,10 +136,10 @@ public class ViewModel extends AndroidViewModel {
         repository.getRoutes(start, end, routeResource);
     }
 
-    public void createServiceRequest(String customerId, String shopId, String vehicleId, String serviceId, String problemDescription, String address, double lat, double lng, double totalPrice, double totalDistance, double totalDuration) {
+    public void createServiceRequest(List<Uri> imagePaths, String customerId, String shopId, String vehicleId, String serviceId, String problemDescription, String address, double lat, double lng, double totalPrice, double totalDistance, double totalDuration) {
         Location location = new Location(lat, lng, address);
         ServiceRequest serviceRequest = new ServiceRequest(customerId, shopId, vehicleId, serviceId, problemDescription, location, totalPrice, totalDistance, totalDuration);
-        repository.createServiceRequest(serviceRequest, serviceRequestResource);
+        repository.createServiceRequest(imagePaths, serviceRequest, serviceRequestResource);
     }
 
     public void sendSOS(String customerId, double latitude, double longitude, String address, List<String> problemTypes) {
@@ -172,6 +179,25 @@ public class ViewModel extends AndroidViewModel {
     public void updateCustomerFcmToken(String userId, String token, Runnable onComplete) {
         FCMTokenRequest fcmTokenRequest = new FCMTokenRequest(userId, token);
         repository.updateCustomerFcmToken(fcmTokenRequest, onComplete);
+    }
+
+    public void rateShop(
+            String shopId,
+            String userId,
+            float rating
+    ) {
+
+        RateShopRequest request =
+                new RateShopRequest(
+                        shopId,
+                        userId,
+                        rating
+                );
+
+        repository.rateShop(
+                request,
+                rateShopResource
+        );
     }
 
     public String getUserId() {

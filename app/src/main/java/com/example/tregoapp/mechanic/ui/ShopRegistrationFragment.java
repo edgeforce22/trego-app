@@ -1,5 +1,7 @@
 package com.example.tregoapp.mechanic.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,19 +11,30 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.tregoapp.R;
 import com.example.tregoapp.customer.utils.LoaderManager;
 import com.example.tregoapp.mechanic.utils.DeviceLocationHelper;
+import com.example.tregoapp.mechanic.utils.FileUtils;
 import com.example.tregoapp.mechanic.viewmodel.ViewModel;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopRegistrationFragment extends Fragment {
 
@@ -33,11 +46,22 @@ public class ShopRegistrationFragment extends Fragment {
     private TextInputEditText etShopContactNumber;
     private TextInputEditText etShopOpeningTime;
     private TextInputEditText etShopClosingTime;
+    private ChipGroup chipVehicleGroup;
     private MaterialButton registerShopBtn;
     private String address;
     private double latitude, longitude;
     private boolean isLocationFetched = false;
     private ViewModel viewModel;
+
+
+    private ImageView ivShopImage;
+    private FrameLayout  btnChooseShopImage;
+    private LinearLayout layoutImagePlaceholder;
+
+    private Uri selectedImageUri;
+    private String selectedImagePath;
+
+    private static final int PICK_IMAGE_CODE = 100;
 
     public ShopRegistrationFragment() {
         // Required empty public constructor
@@ -72,11 +96,32 @@ public class ShopRegistrationFragment extends Fragment {
         etShopContactNumber = view.findViewById(R.id.etShopContactNumber);
         etShopOpeningTime = view.findViewById(R.id.etOpeningTime);
         etShopClosingTime = view.findViewById(R.id.etClosingTime);
+        chipVehicleGroup = view.findViewById(R.id.chipVehicleGroup);
         registerShopBtn = view.findViewById(R.id.registerShopBtn);
+        ivShopImage = view.findViewById(R.id.ivShopImage);
+        btnChooseShopImage = view.findViewById(R.id.btnChooseShopImage);
+        layoutImagePlaceholder =
+                view.findViewById(
+                        R.id.layoutImagePlaceholder
+                );
 
         viewModel = new ViewModelProvider(this).get(ViewModel.class);
         owner_id = viewModel.getUserId();
         viewModelObserver();
+
+        btnChooseShopImage.setOnClickListener(v -> {
+
+            Intent intent =
+                    new Intent(Intent.ACTION_PICK);
+
+            intent.setType("image/*");
+
+            startActivityForResult(
+                    intent,
+                    PICK_IMAGE_CODE
+            );
+        });
+
 
         // Opening Time and Closing Time Picker Setup Start
         etShopOpeningTime.setOnClickListener(v -> {
@@ -127,8 +172,9 @@ public class ShopRegistrationFragment extends Fragment {
             String shopContactNumber = etShopContactNumber.getText().toString().trim();
             String shopOpeningTime = etShopOpeningTime.getText().toString().trim();
             String shopClosingTime = etShopClosingTime.getText().toString().trim();
+            List<String> supportedVehicles = getSelectedVehicleTypes();
 
-            if (!validateData(shopName, shopContactNumber, shopOpeningTime, shopClosingTime)) {
+            if (!validateData(shopName, shopContactNumber, shopOpeningTime, shopClosingTime, supportedVehicles)) {
                 return;
             }
 
@@ -149,6 +195,7 @@ public class ShopRegistrationFragment extends Fragment {
 
                     LoaderManager.show(this);
                     viewModel.registerShop(
+                            selectedImagePath,
                             owner_id,
                             shopName,
                             shopContactNumber,
@@ -156,7 +203,8 @@ public class ShopRegistrationFragment extends Fragment {
                             latitude,
                             longitude,
                             shopOpeningTime,
-                            shopClosingTime
+                            shopClosingTime,
+                            supportedVehicles
                     );
 
 //                    Toast.makeText(requireContext(),
@@ -180,28 +228,104 @@ public class ShopRegistrationFragment extends Fragment {
         });
     }
 
-    private boolean validateData(String shopName, String shopContactNumber, String shopOpeningTime, String shopClosingTime) {
+    @Override
+    public void onActivityResult(
+
+            int requestCode,
+
+            int resultCode,
+
+            @Nullable Intent data
+    ) {
+
+        super.onActivityResult(
+                requestCode,
+                resultCode,
+                data
+        );
+
+        if (
+                requestCode == PICK_IMAGE_CODE
+                        &&
+                        resultCode == getActivity().RESULT_OK
+                        &&
+                        data != null
+        ) {
+
+            selectedImageUri =
+                    data.getData();
+
+            /*
+             * SHOW IMAGE
+             */
+            ivShopImage.setVisibility(
+                    View.VISIBLE
+            );
+
+            /*
+             * HIDE PLACEHOLDER
+             */
+            layoutImagePlaceholder.setVisibility(
+                    View.GONE
+            );
+
+            Glide.with(requireContext())
+                    .load(selectedImageUri)
+                    .into(ivShopImage);
+
+            /*
+             * GET FILE PATH
+             */
+            selectedImagePath =
+                    FileUtils.getPath(
+                            requireContext(),
+                            selectedImageUri
+                    );
+        }
+    }
+
+    private boolean validateData(String shopName, String shopContactNumber, String shopOpeningTime, String shopClosingTime, List<String> supportedVehicles) {
         if (shopName.isEmpty() &&
         shopContactNumber.isEmpty() &&
         shopOpeningTime.isEmpty() &&
         shopClosingTime.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter all the required field", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter all the required field", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopName.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the shop name", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the shop name", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopContactNumber.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the shop contact number", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the shop contact number", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopOpeningTime.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the shop opening time", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the shop opening time", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (shopClosingTime.isEmpty()) {
-            // Toast.makeText(requireContext(), "Please enter the shop closing time", Toast.LENGTH_SHORT).show();
+             Toast.makeText(requireContext(), "Please enter the shop closing time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (supportedVehicles.isEmpty()) {
+
+            Toast.makeText(
+                    requireContext(),
+                    "Select at least one vehicle type",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return false;
+        }
+        if (selectedImagePath == null) {
+
+            Toast.makeText(
+                    requireContext(),
+                    "Please choose shop image",
+                    Toast.LENGTH_SHORT
+            ).show();
+
             return false;
         }
         return true;
@@ -237,5 +361,33 @@ public class ShopRegistrationFragment extends Fragment {
                     .replace(R.id.fragment_container, createServiceFragment)
                     .commit();
         });
+    }
+
+    private List<String> getSelectedVehicleTypes() {
+
+        List<String> selectedVehicles =
+                new ArrayList<>();
+
+        for (int i = 0;
+             i < chipVehicleGroup.getChildCount();
+             i++) {
+
+            View view =
+                    chipVehicleGroup.getChildAt(i);
+
+            if (view instanceof Chip) {
+
+                Chip chip = (Chip) view;
+
+                if (chip.isChecked()) {
+
+                    selectedVehicles.add(
+                            chip.getText().toString()
+                    );
+                }
+            }
+        }
+
+        return selectedVehicles;
     }
 }

@@ -5,6 +5,7 @@ import com.example.tregoapp.customer.model.GetRequestById;
 import com.example.tregoapp.customer.model.Location;
 import com.example.tregoapp.customer.model.MechanicShop;
 //import com.example.tregoapp.customer.model.NearbyRequest;
+import com.example.tregoapp.customer.model.RateShopRequest;
 import com.example.tregoapp.customer.model.SOSRequest;
 import com.example.tregoapp.customer.model.ServiceDetail;
 import com.example.tregoapp.customer.model.ServiceRequest;
@@ -19,11 +20,15 @@ import com.example.tregoapp.customer.model.FCMTokenRequest;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -61,10 +66,35 @@ public interface ApiService {
     );
 
 
+    @Multipart
     @POST("customer/auth/createRequest")
     Call<ApiResponse<ServiceRequest>> createRequest(
-            @Body ServiceRequest request
+
+            @Part List<MultipartBody.Part> requestImages,
+
+            @Part("customerId") RequestBody customerId,
+
+            @Part("shopId") RequestBody shopId,
+
+            @Part("vehicleId") RequestBody vehicleId,
+
+            @Part("serviceId") RequestBody serviceId,
+
+            @Part("problemDescription") RequestBody problemDescription,
+
+            @Part("customerLocation") RequestBody customerLocation,
+
+            @Part("totalPrice") RequestBody totalPrice,
+
+            @Part("totalDistance") RequestBody totalDistance,
+
+            @Part("totalDuration") RequestBody totalDuration
     );
+
+//    @POST("customer/auth/createRequest")
+//    Call<ApiResponse<ServiceRequest>> createRequest(
+//            @Body ServiceRequest request
+//    );
 
     @POST("customer/auth/sendSOS")
     Call<ApiResponse<GetRequestById>> sendSOS(@Body SOSRequest request);
@@ -106,6 +136,11 @@ public interface ApiService {
     @POST("customer/auth/getServiceDetails")
     Call<ApiResponse<ServiceDetail>> getServiceDetails(@Body GetRequestById request);
 
+    @PUT("customer/auth/updateLocation")
+    Call<ApiResponse<FCMTokenRequest>> updateLocation(
+            @Body FCMTokenRequest request
+    );
+
     @PUT("customer/auth/updateCustomerFcmToken")
     Call<ApiResponse<FCMTokenRequest>> updateCustomerFcmToken(
             @Body FCMTokenRequest request
@@ -120,6 +155,10 @@ public interface ApiService {
             @Query("geometries") String geometries
     );
 
+    @POST("customer/auth/rateShop")
+    Call<ApiResponse<Object>> rateShop(
+            @Body RateShopRequest request
+    );
 
 //    @POST("mechanic/nearby-mechanics")
 //    Call<ApiResponse<List<MechanicShop>>> getNearbyMechanics(

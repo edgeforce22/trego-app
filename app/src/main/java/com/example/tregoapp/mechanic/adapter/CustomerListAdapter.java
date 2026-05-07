@@ -1,15 +1,20 @@
 package com.example.tregoapp.mechanic.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.tregoapp.BuildConfig;
 import com.example.tregoapp.R;
 import com.example.tregoapp.mechanic.listener.OnItemClickListener;
 import com.example.tregoapp.mechanic.model.ServiceRequest;
@@ -21,6 +26,7 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
     private final OnItemClickListener listener;
     private final Utility utility = new Utility();
 
+    private final String BASE_URL = BuildConfig.BASE_URL_ENDPOINT;
     private static final int TYPE_NORMAL = 0;
     private static final int TYPE_SOS = 1;
 
@@ -75,16 +81,134 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
         }
 
         if ("SOS".equalsIgnoreCase(item.getType())) {
-            String services = item.getProblemDescription();
-            holder.tvService.setText(services != null ? services : "Emergency Assistance Required");
-            holder.tvDistance.setText(item.getTotalDistance() > 0 ? String.format("%.1f km away", item.getTotalDistance()) : "Nearby");
+
+            holder.tvService.setText(
+
+                    item.getServiceName() != null
+                            ? item.getServiceName()
+                            : "Emergency Assistance"
+            );
+
+            holder.tvProblemDescription.setText(
+
+                    item.getProblemDescription() != null
+                            ? item.getProblemDescription()
+                            : "Emergency vehicle issue reported"
+            );
+
+            holder.tvDistance.setText(
+
+                    item.getTotalDistance() > 0
+
+                            ? String.format(
+                            "%.1f km away",
+                            item.getTotalDistance()
+                    )
+
+                            : "Nearby"
+            );
+
+            if (holder.tvDuration != null) {
+
+                holder.tvDuration.setText(
+
+                        String.format(
+                                "%.0f mins",
+                                item.getTotalDuration()
+                        )
+                );
+            }
         } else {
-            String services = item.getServiceName();
-            holder.tvService.setText(services != null ? services : "N/A");
+            String serviceText =
+                    item.getServiceName();
+
+            if (
+                    item.getServiceDescription() != null
+                            &&
+                            !item.getServiceDescription().isEmpty()
+            ) {
+
+//                serviceText =
+//                        serviceText
+//                                + " • "
+//                                + item.getServiceDescription();
+            }
+
+            holder.tvService.setText(
+                    serviceText != null
+                            ? serviceText
+                            : "N/A"
+            );
             holder.tvDistance.setText(item.getTotalDistance() + " km");
             if (holder.tvDuration != null) {
                 holder.tvDuration.setText(item.getTotalDuration() + " min");
             }
+        }
+
+
+        /*
+         * REQUEST IMAGE
+         */
+        if (
+                holder.rvRequestImages != null
+                        &&
+                        item.getRequestImages() != null
+                        &&
+                        !item.getRequestImages().isEmpty()
+        ) {
+
+            holder.rvRequestImages.setVisibility(
+                    View.VISIBLE
+            );
+
+            holder.rvRequestImages.setLayoutManager(
+
+                    new LinearLayoutManager(
+
+                            holder.itemView.getContext(),
+
+                            LinearLayoutManager.HORIZONTAL,
+
+                            false
+                    )
+            );
+
+            RequestImagesAdapter imagesAdapter =
+                    new RequestImagesAdapter(
+
+                            item.getRequestImages()
+                    );
+
+            holder.rvRequestImages.setAdapter(
+                    imagesAdapter
+            );
+
+        } else {
+
+            if (holder.rvRequestImages != null) {
+
+                holder.rvRequestImages.setVisibility(
+                        View.GONE
+                );
+            }
+        }
+
+        if (holder.tvTotalPrice != null) {
+
+            holder.tvTotalPrice.setText(
+
+                    String.format(
+                            "₹ %.0f",
+                            item.getTotalPrice()
+                    )
+            );
+        }
+
+        if (holder.tvProblemDescription != null) {
+
+            holder.tvProblemDescription.setText(
+                    item.getProblemDescription()
+            );
         }
 
         holder.tvCreatedAt.setText(
@@ -115,13 +239,21 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
     public static class MechanicViewHolder extends RecyclerView.ViewHolder {
 
         TextView tvCustomerAddress, tvCustomerName, tvMechanicAddress,
-                tvService, tvDistance, tvDuration, tvCreatedAt;
+                tvService, tvDistance, tvDuration, tvCreatedAt, tvTotalPrice, tvProblemDescription;
 
         MaterialButton acceptBtn, cancelBtn;
+
+        RecyclerView rvRequestImages;
 
         public MechanicViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            tvTotalPrice =
+                    itemView.findViewById(
+                            R.id.tvTotalPrice
+                    );
+            tvProblemDescription = itemView.findViewById(R.id.tvProblemDescription);
+            rvRequestImages = itemView.findViewById(R.id.rvRequestImages);
             tvCustomerName = itemView.findViewById(R.id.tvCustomerName);
             tvCustomerAddress = itemView.findViewById(R.id.tvCustomerAddress);
             tvMechanicAddress = itemView.findViewById(R.id.tvMechanicAddress); // Optional in SOS
@@ -153,15 +285,67 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
                 @Override
                 public boolean areContentsTheSame(
                         @NonNull ServiceRequest oldItem,
-                        @NonNull ServiceRequest newItem) {
+                        @NonNull ServiceRequest newItem
+                ) {
 
-                    return java.util.Objects.equals(oldItem.getId(), newItem.getId()) &&
-                            java.util.Objects.equals(oldItem.getStatus(), newItem.getStatus()) &&
-                            java.util.Objects.equals(oldItem.getType(), newItem.getType()) &&
-                            java.util.Objects.equals(oldItem.getProblemDescription(), newItem.getProblemDescription()) &&
-                            oldItem.getTotalDistance() == newItem.getTotalDistance() &&
-                            oldItem.getTotalDuration() == newItem.getTotalDuration();
+                    return java.util.Objects.equals(
+                            oldItem.getId(),
+                            newItem.getId()
+                    )
+
+                            &&
+
+                            java.util.Objects.equals(
+                                    oldItem.getStatus(),
+                                    newItem.getStatus()
+                            )
+
+                            &&
+
+                            java.util.Objects.equals(
+                                    oldItem.getType(),
+                                    newItem.getType()
+                            )
+
+                            &&
+
+                            java.util.Objects.equals(
+                                    oldItem.getProblemDescription(),
+                                    newItem.getProblemDescription()
+                            )
+
+                            &&
+
+                            java.util.Objects.equals(
+                                    oldItem.getRequestImages(),
+                                    newItem.getRequestImages()
+                            )
+
+                            &&
+
+                            oldItem.getTotalDistance()
+                                    ==
+                                    newItem.getTotalDistance()
+
+                            &&
+
+                            oldItem.getTotalDuration()
+                                    ==
+                                    newItem.getTotalDuration();
                 }
+
+//                @Override
+//                public boolean areContentsTheSame(
+//                        @NonNull ServiceRequest oldItem,
+//                        @NonNull ServiceRequest newItem) {
+//
+//                    return java.util.Objects.equals(oldItem.getId(), newItem.getId()) &&
+//                            java.util.Objects.equals(oldItem.getStatus(), newItem.getStatus()) &&
+//                            java.util.Objects.equals(oldItem.getType(), newItem.getType()) &&
+//                            java.util.Objects.equals(oldItem.getProblemDescription(), newItem.getProblemDescription()) &&
+//                            oldItem.getTotalDistance() == newItem.getTotalDistance() &&
+//                            oldItem.getTotalDuration() == newItem.getTotalDuration();
+//                }
             };
 
 //    private static final DiffUtil.ItemCallback<ServiceRequest> DIFF_CALLBACK =

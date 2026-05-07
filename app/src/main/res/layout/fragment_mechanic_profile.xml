@@ -79,11 +79,18 @@
                     android:gravity="center_horizontal">
 
                     <ImageView
-                        android:layout_width="92dp"
-                        android:layout_height="92dp"
+                        android:id="@+id/shopImage"
+
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:clipToOutline="true"
+                        android:layout_marginTop="16dp"
+
+                        android:scaleType="centerCrop"
+
                         android:src="@drawable/profile"
 
-                        android:padding="18dp" />
+                        android:background="@drawable/rounded_corner"/>
 
                     <TextView
                         android:id="@+id/tvName"
@@ -161,15 +168,22 @@
                             android:textSize="13sp"
                             android:textColor="#111111" />
 
-                        <ImageView
-                            android:id="@+id/copyShopIdBtn"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_copy"
-                            android:padding="2dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:background="?attr/selectableItemBackgroundBorderless" />
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <ImageView
+                                android:id="@+id/copyShopIdBtn"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_copy"
+                                android:padding="2dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:background="?attr/selectableItemBackgroundBorderless" />
+
+                        </FrameLayout>
 
                     </LinearLayout>
 
@@ -180,8 +194,12 @@
 
                     <!-- Shop Name -->
                     <LinearLayout
+                        android:id="@+id/goToRegisterShop"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
                         android:paddingVertical="10dp">
 
                         <TextView
@@ -199,6 +217,14 @@
                             android:text="Shop Name"
                             android:textSize="13sp"
                             android:textColor="#111111" />
+
+                        <ImageView
+                            android:id="@+id/ivGoToRegisterShopArrow"
+                            android:layout_width="11dp"
+                            android:layout_height="11dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/right_arrow" />
+
 
                     </LinearLayout>
 
@@ -235,6 +261,56 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="#F2F2F2" />
+
+                    <!-- Status -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="10dp">
+
+                        <TextView
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:text="Rating"
+                            android:textSize="13sp"
+                            android:textColor="#777777" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center">
+
+                            <RatingBar
+                                android:id="@+id/ratingBar"
+                                style="@style/Widget.AppCompat.RatingBar.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:numStars="5"
+                                android:stepSize="0.5"
+                                android:rating="0"
+                                android:scaleX="1"
+                                android:scaleY="1"
+                                android:progressTint="#FFD700"
+                                android:secondaryProgressTint="#FFD700" />
+
+                            <TextView
+                                android:id="@+id/tvRatingCount"
+                                android:layout_width="110dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="(1)"
+                                android:textSize="13sp"
+                                android:textColor="#777777" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#F2F2F2" />
+
 
                     <!-- Phone -->
                     <LinearLayout
@@ -316,7 +392,7 @@
 
                     <!-- Add Service -->
                     <LinearLayout
-                        android:id="@+id/goToCreateService"
+                        android:id="@+id/goToServicesList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="18dp"
@@ -335,7 +411,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Add New Service"
+                                android:text="Manage Services"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
                                 android:textColor="#111111" />
