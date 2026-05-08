@@ -134,6 +134,60 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
 //                                + item.getServiceDescription();
             }
 
+            if (item.getVehicle() != null) {
+
+                holder.tvVehicleType.setText(
+
+                        item.getVehicle()
+                                .getVehicleType()
+                                .toUpperCase()
+                );
+
+                holder.tvVehicleBrandModel.setText(
+
+                        item.getVehicle()
+                                .getVehicleBrand()
+
+                                + " "
+
+                                +
+
+                                item.getVehicle()
+                                        .getVehicleModel()
+                );
+
+                String regNo =
+                        item.getVehicle()
+                                .getRegistrationNumber();
+
+                if (
+                        regNo != null
+                                &&
+                                !regNo.isEmpty()
+                ) {
+
+                    holder.tvRegistrationNumber
+                            .setVisibility(View.VISIBLE);
+
+                    holder.tvRegistrationNumber
+                            .setText(regNo);
+
+                } else {
+
+                    holder.tvRegistrationNumber
+                            .setVisibility(View.GONE);
+                }
+
+            } else {
+
+                holder.tvVehicleType.setText("N/A");
+
+                holder.tvVehicleBrandModel.setText("Vehicle");
+
+                holder.tvRegistrationNumber
+                        .setVisibility(View.GONE);
+            }
+
             holder.tvService.setText(
                     serviceText != null
                             ? serviceText
@@ -241,6 +295,10 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
         TextView tvCustomerAddress, tvCustomerName, tvMechanicAddress,
                 tvService, tvDistance, tvDuration, tvCreatedAt, tvTotalPrice, tvProblemDescription;
 
+        TextView tvVehicleType,
+                tvVehicleBrandModel,
+                tvRegistrationNumber;
+
         MaterialButton acceptBtn, cancelBtn;
 
         RecyclerView rvRequestImages;
@@ -263,6 +321,20 @@ public class CustomerListAdapter extends ListAdapter<ServiceRequest, CustomerLis
             tvCreatedAt = itemView.findViewById(R.id.tvCreatedAt);
             acceptBtn = itemView.findViewById(R.id.acceptBtn);
             cancelBtn = itemView.findViewById(R.id.cancelBtn);
+            tvVehicleType =
+                    itemView.findViewById(
+                            R.id.tvVehicleType
+                    );
+
+            tvVehicleBrandModel =
+                    itemView.findViewById(
+                            R.id.tvVehicleBrandModel
+                    );
+
+            tvRegistrationNumber =
+                    itemView.findViewById(
+                            R.id.tvRegistrationNumber
+                    );
         }
     }
 

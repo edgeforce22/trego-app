@@ -83,6 +83,9 @@ public class ServiceRequest {
     @SerializedName("customerPhoneNumber")
     private String customerPhoneNumber;
 
+    @SerializedName("vehicle")
+    private VehicleDetails vehicle;
+
 
     public ServiceRequest(String customerId, String shopId, String vehicleId, String serviceId, String problemDescription, Location customerLocation, double totalPrice, double totalDistance) {
         this.customerId = customerId;
@@ -265,5 +268,9 @@ public class ServiceRequest {
 
     public String getCustomerPhoneNumber() {
         return customerPhoneNumber;
+    }
+
+    public VehicleDetails getVehicle() {
+        return vehicle;
     }
 }
